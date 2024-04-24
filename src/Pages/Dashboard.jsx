@@ -50,25 +50,25 @@ const Dashboard = () => {
           />
           <button
             id="searchButton"
-            className="bg-color text-white py-2 px-4 rounded-r-md  focus:outline-none"
+            className="bg-color hover:bg-orange-600 text-white py-2 px-4 rounded-r-md  focus:outline-none"
           >
             Search
           </button>
         </div>
         <div className="flex gap-2">
-        <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95">Today</button>
+        <button className="rounded-lg bg-color px-4  hover:bg-orange-600  py-2  text-white duration-300 active:scale-95">Today</button>
 
 
-          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
+          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
             This Week
           </button>
-          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
+          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
             Last Week
           </button>
-          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
+          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
             This Month
           </button>
-          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
+          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
             Last Month
           </button>
         </div>
