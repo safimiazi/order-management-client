@@ -30,7 +30,7 @@ const Navbar = () => {
               <NavLink
                 to="/"
                 className={({ isActive }) =>
-                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                  `${isActive ? "bg-orange-700 text-white font-bold" : ""} hover:font-bold`
                 }
               >
                 Dashboard
@@ -40,7 +40,7 @@ const Navbar = () => {
               <NavLink
                 to="/customer-list"
                 className={({ isActive }) =>
-                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                  `${isActive ? "bg-orange-700 text-white font-bold" : ""} hover:font-bold`
                 }
               >
                 Customer List
@@ -50,7 +50,7 @@ const Navbar = () => {
               <NavLink
                 to="/transaction-records"
                 className={({ isActive }) =>
-                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                  `${isActive ? "bg-orange-700 text-white font-bold" : ""} hover:font-bold`
                 }
               >
                 Transaction Records
@@ -68,7 +68,7 @@ const Navbar = () => {
             <NavLink
               to="/"
               className={({ isActive }) =>
-                `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                `${isActive ? "bg-orange-700 text-white font-bold" : ""} hover:font-bold`
               }
             >
               Dashboard
@@ -78,7 +78,7 @@ const Navbar = () => {
             <NavLink
               to="/customer-list"
               className={({ isActive }) =>
-                `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                `${isActive ? "bg-orange-700 text-white font-bold" : ""} hover:bg-orange-700`
               }
             >
               Customer List
@@ -88,7 +88,7 @@ const Navbar = () => {
             <NavLink
               to="/transaction-records"
               className={({ isActive }) =>
-                `${isActive ? "underline text-white font-bold " : ""} hover:font-bold`
+                `${isActive ? "bg-orange-700 text-white font-bold " : ""} hover:font-bold`
               }
             >
               Transaction Records

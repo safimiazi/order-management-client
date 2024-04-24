@@ -55,21 +55,20 @@ const Dashboard = () => {
             Search
           </button>
         </div>
-        <div className="flex">
-        <button className="bg-color hover:bg-orange-600 focus:bg- active:bg-opacity-100 text-white font-semibold py-2 px-4 rounded-md focus:outline-none mr-4">
-  Today
-</button>
+        <div className="flex gap-2">
+        <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95">Today</button>
 
-          <button className="bg-color text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
+
+          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
             This Week
           </button>
-          <button className="bg-color text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
+          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
             Last Week
           </button>
-          <button className="bg-color text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
+          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
             This Month
           </button>
-          <button className="bg-color text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
+          <button className="rounded-lg bg-color px-4  py-2  text-white duration-300 active:scale-95 ">
             Last Month
           </button>
         </div>

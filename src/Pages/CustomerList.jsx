@@ -190,10 +190,8 @@ const CustomerList = () => {
                       name="customerId"
                       className="w-full border border-color rounded px-4 py-2"
                     >
-                      <option value="1">Customer 1</option>
-                      <option value="2">Customer 2</option>
-                      <option value="3">Customer 3</option>
-                      {/* Add more customer options as needed */}
+                      <option value="1">Deposit</option>
+                      <option value="2">Withdraw </option>
                     </select>
                 </div>
                </div>
@@ -202,13 +200,15 @@ const CustomerList = () => {
                 Condition
                 </label>
                 <div className="relative">
-                <input
-                    className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
-                    type="text"
-                    name=""
-                    placeholder="Condition"
-                    id=""
-                  />
+                <select
+                      id="customerId"
+                      name="customerId"
+                      className="w-full border border-color rounded px-4 py-2"
+                    >
+                      <option value="1">Withdraw</option>
+                      <option value="2">Non-Withdraw</option>
+                      {/* Add more customer options as needed */}
+                    </select>
                 </div>
                 </div>
                 <div>
