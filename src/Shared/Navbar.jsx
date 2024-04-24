@@ -24,49 +24,51 @@ const Navbar = () => {
           </div>
           <ul
             tabIndex={0}
-            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 text-black shadow bg-base-100 rounded-box w-52"
+            className="menu menu-sm dropdown-content mt-3 z-[1] p-2 text-black text-2xl   rounded-box w-52"
           >
-             <li>
-            <NavLink
-              to="/"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-black" : ""
-              }
-            >
-              Dashboard
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/customer-list"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-black" : ""
-              }
-            >
-              Customer List
-            </NavLink>
-          </li>
-          <li>
-            <NavLink
-              to="/transaction-records"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-black" : ""
-              }
-            >
-              Transaction Records
-            </NavLink>
-          </li>
+            <li>
+              <NavLink
+                to="/"
+                className={({ isActive }) =>
+                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                }
+              >
+                Dashboard
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/customer-list"
+                className={({ isActive }) =>
+                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                }
+              >
+                Customer List
+              </NavLink>
+            </li>
+            <li>
+              <NavLink
+                to="/transaction-records"
+                className={({ isActive }) =>
+                  `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
+                }
+              >
+                Transaction Records
+              </NavLink>
+            </li>
           </ul>
         </div>
-        <NavLink to={"/"} className="btn btn-ghost text-xl">Sarowar</NavLink>
+        <NavLink to={"/"} className="btn btn-ghost text-2xl">
+          Sarowar
+        </NavLink>
       </div>
       <div className="navbar-end hidden lg:flex">
-        <ul className="menu menu-horizontal px-1 font-bold">
+        <ul className="menu menu-horizontal text-xl px-1">
           <li>
             <NavLink
               to="/"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-white" : ""
+              className={({ isActive }) =>
+                `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
               }
             >
               Dashboard
@@ -75,8 +77,8 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/customer-list"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-white" : ""
+              className={({ isActive }) =>
+                `${isActive ? "underline text-white font-bold" : ""} hover:font-bold`
               }
             >
               Customer List
@@ -85,8 +87,8 @@ const Navbar = () => {
           <li>
             <NavLink
               to="/transaction-records"
-              className={({ isActive, isPending }) =>
-                isPending ? "pending" : isActive ? "underline text-white" : ""
+              className={({ isActive }) =>
+                `${isActive ? "underline text-white font-bold " : ""} hover:font-bold`
               }
             >
               Transaction Records
@@ -94,7 +96,6 @@ const Navbar = () => {
           </li>
         </ul>
       </div>
-     
     </div>
   );
 };

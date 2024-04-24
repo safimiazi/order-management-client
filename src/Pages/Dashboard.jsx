@@ -40,14 +40,13 @@ const Dashboard = () => {
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <h1 className="text-2xl font-semibold mb-4">Dynamic Dashboard</h1>
-      <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center justify-center">
-        <div className="flex">
+      <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
+        <div className="flex-1 flex">
           <input
             id="userIdInput"
             type="text"
             placeholder="User ID"
-            className="w-2/3 py-2 px-4 rounded-l-md focus:outline-none"
+            className="w-full py-2 px-4 rounded-l-md focus:outline-none"
           />
           <button
             id="searchButton"
@@ -57,9 +56,10 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="flex">
-          <button className="bg-color  text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
-            Today
-          </button>
+        <button className="bg-color hover:bg-orange-600 focus:bg- active:bg-opacity-100 text-white font-semibold py-2 px-4 rounded-md focus:outline-none mr-4">
+  Today
+</button>
+
           <button className="bg-color text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
             This Week
           </button>
@@ -97,7 +97,7 @@ const Dashboard = () => {
                     <select
                       id="customerId"
                       name="customerId"
-                      className="w-full border border-gray-300 rounded px-3 py-2"
+                      className="w-full border border-color focus:border-color active:border-color rounded px-3 py-2"
                     >
                       <option value="1">Customer 1</option>
                       <option value="2">Customer 2</option>
@@ -115,7 +115,7 @@ const Dashboard = () => {
                     <select
                       id="transactionType"
                       name="transactionType"
-                      className="w-full border border-gray-300 rounded px-3 py-2"
+                      className="w-full border border-color rounded px-3 py-2"
                       onChange={handleTransactionTypeChange}
                       value={transactionType}
                     >
@@ -135,7 +135,7 @@ const Dashboard = () => {
                         type="text"
                         id="transactionNumber"
                         name="transactionNumber"
-                        className="w-full border border-gray-300 rounded px-3 py-2"
+                        className="w-full border border-color rounded px-3 py-2"
                       />
                     </div>
                   )}
@@ -150,7 +150,7 @@ const Dashboard = () => {
                       type="text"
                       id="amount"
                       name="amount"
-                      className="w-full border border-gray-300 rounded px-3 py-2"
+                      className="w-full border border-color rounded px-3 py-2"
                     />
                   </div>
                   <div className="mb-4">
@@ -163,7 +163,7 @@ const Dashboard = () => {
                     <select
                       id="paymentType"
                       name="paymentType"
-                      className="w-full border border-gray-300 rounded px-3 py-2"
+                      className="w-full border border-color rounded px-3 py-2"
                     >
                       <option value="bkash">Bkash</option>
                       <option value="nagod">Nagod</option>
@@ -192,7 +192,7 @@ const Dashboard = () => {
                   >
                     Order ID
                   </label>
-                  <div className="flex items-center justify-between border border-gray-300 rounded-md py-2 px-4">
+                  <div className="flex items-center justify-between border border-color rounded-md py-2 px-4">
                     <span>{orderId}</span>
                     <button
                       onClick={() => copyText(orderId)}
@@ -209,7 +209,7 @@ const Dashboard = () => {
                   >
                     Points
                   </label>
-                  <div className="flex items-center justify-between border border-gray-300 rounded-md py-2 px-4">
+                  <div className="flex items-center justify-between border border-color rounded-md py-2 px-4">
                     <span>{points}</span>
                     <button
                       onClick={() => copyText(points)}
