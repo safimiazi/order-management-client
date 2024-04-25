@@ -22,7 +22,7 @@ const [search, setSearch] = useState()
       return setPageNumber(0);
     }
     setPageNumber(num);
-  };
+  }
 
 useEffect(()=> {
   fetch(`http://localhost:5000/api?search=${search}`, {
