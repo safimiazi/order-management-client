@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import toast from "react-hot-toast";
+import { Link } from "react-router-dom";
 
 const CustomerList = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -109,12 +110,18 @@ const CustomerList = () => {
                 <td className="px-6 py-4">$2999</td>
                 <td className="px-6 py-4">$2999</td>
                 <td className="px-6 py-4 text-right">
-                  <a
-                    href="#"
-                    className="font-medium text-color hover:underline"
+                  <Link
+                    
+                    className="font-medium mr-2 text-color hover:underline"
                   >
                     Edit
-                  </a>
+                  </Link>
+                  <Link
+                    
+                    className="font-medium text-color hover:underline"
+                  >
+                    Delete
+                  </Link>
                 </td>
               </tr>
               <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">

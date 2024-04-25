@@ -13,7 +13,8 @@ const Dashboard = () => {
   const [amount, setAmount] = useState();
   const [paymentType, setPaymentType] = useState();
   const [searchValue, setSearchValue] = useState();
-
+const [ trans , setTrans] = useState()
+const [ number , setNumber] = useState()
   const handleSentData = () => {
     const data = {
       customerId,
@@ -22,6 +23,8 @@ const Dashboard = () => {
       paymentType,
       orderId,
       points,
+      trans,
+      number
     };
     fetch("http://localhost:5000", {
       method: "POST",
@@ -60,11 +63,23 @@ const Dashboard = () => {
     return points;
   };
 
+  function generateTransactionId(length) {
+    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+    let transactionId = '';
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      transactionId += characters[randomIndex];
+    }
+    return transactionId;
+  }
+
   // Function to handle form submission
   const handleSubmit = () => {
     const orderId = generateOrderId();
     const amount = parseFloat(document.getElementById("amount").value);
     const calculatedPoints = calculatePoints(amount);
+    const transection = generateTransactionId(12)
+    setTrans(transection)
     setOrderId(orderId);
     setPoints(calculatedPoints);
     setShowOrderDetails(true);
@@ -309,6 +324,40 @@ const Dashboard = () => {
                     </button>
                   </div>
                 </div>
+                <div className="mb-4">
+                  <label
+                    htmlFor="points"
+                    className="block text-sm font-medium text-gray-700 mb-2"
+                  >
+                    Transaction Id
+                  </label>
+                  <div className="flex items-center justify-between border border-color rounded-md py-2 px-4">
+                    <span>{trans}</span>
+                    <button
+                      onClick={() => copyText(trans)}
+                      className="text-blue-500 hover:text-blue-700 focus:outline-none"
+                    >
+                      Copy
+                    </button>
+                  </div>
+                </div>
+                <div className="mb-4">
+                    <label
+                      htmlFor="amount"
+                      className="block text-gray-700 text-sm font-bold mb-2"
+                    >
+                      Phone Number
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="Type Phone Number"
+                      value={number}
+                      onChange={(e) => setNumber(e.target.value)}
+                      id="amount"
+                      name="amount"
+                      className="w-full border border-color rounded px-3 py-2"
+                    />
+                  </div>
                 <div>
                   <button
                     onClick={handleSentData}
