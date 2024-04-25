@@ -13,8 +13,8 @@ const Dashboard = () => {
   const [amount, setAmount] = useState();
   const [paymentType, setPaymentType] = useState();
   const [searchValue, setSearchValue] = useState();
-const [ trans , setTrans] = useState()
-const [ number , setNumber] = useState()
+  const [trans, setTrans] = useState();
+  const [number, setNumber] = useState();
   const handleSentData = () => {
     const data = {
       customerId,
@@ -24,7 +24,7 @@ const [ number , setNumber] = useState()
       orderId,
       points,
       trans,
-      number
+      number,
     };
     fetch("http://localhost:5000", {
       method: "POST",
@@ -64,8 +64,9 @@ const [ number , setNumber] = useState()
   };
 
   function generateTransactionId(length) {
-    const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-    let transactionId = '';
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let transactionId = "";
     for (let i = 0; i < length; i++) {
       const randomIndex = Math.floor(Math.random() * characters.length);
       transactionId += characters[randomIndex];
@@ -78,8 +79,8 @@ const [ number , setNumber] = useState()
     const orderId = generateOrderId();
     const amount = parseFloat(document.getElementById("amount").value);
     const calculatedPoints = calculatePoints(amount);
-    const transection = generateTransactionId(12)
-    setTrans(transection)
+    const transection = generateTransactionId(12);
+    setTrans(transection);
     setOrderId(orderId);
     setPoints(calculatedPoints);
     setShowOrderDetails(true);
@@ -173,9 +174,141 @@ const [ number , setNumber] = useState()
 
       <div className="bg-white rounded-lg shadow-md p-6">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-200 rounded-lg p-4">
-            {/* Top Up content */}
-          </div>
+        <div className="bg-gray-200 rounded-lg p-4">
+  <div className="p-4 rounded-lg s">
+    <div className="flex justify-between">
+      <div>
+        <h2 className="text-sm text-black font-semibold mb-2">
+          Total Agent Top Up
+        </h2>
+        <p className="text-black">
+          BDT:{" "}
+          <span className="text-green-400 font-semibold" id="totalTopUpBDT">
+            ৳ 25,000.00
+          </span>
+        </p>
+        <p className="text-black">
+          Credits:{" "}
+          <span className="text-green-400 font-semibold" id="totalTopUpWinBDT">
+            ৳ 39,062.50
+          </span>
+        </p>
+        <p className="text-black">
+          Unique Agents:{" "}
+          <span className="text-green-400 font-semibold" id="uniqueTopUpAgents">
+            2
+          </span>
+        </p>
+        <p className="text-black">
+          Total Count:{" "}
+          <span className="text-green-400 font-semibold" id="totalTopUpCount">
+            1
+          </span>
+        </p>
+        <p className="text-black">
+          Last Deposit:{" "}
+          <span className="text-green-400 font-semibold" id="totalTopUpCount">
+            1
+          </span>
+        </p>
+      </div>
+
+      <div>
+        <h2 className="text-sm  font-semibold mb-2">
+          Payment Method
+        </h2>
+        <p className="d-data text-black">
+          bKash:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Rocket:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalWinBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Upay:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalCount">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Nagod:{" "}
+          <span className="text-green-400 font-semibold" id="uniqueWithdrawalAgents">
+            ৳ 0.00
+          </span>
+        </p>
+      </div>
+    </div>
+
+    <hr className="my-2 border-gray-400" />
+
+    <div className="flex justify-between">
+      <div>
+        <h2 className="text-sm  font-semibold mb-1">
+          Total Withdrawal
+        </h2>
+        <p className="d-data text-black">
+          BDT:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Credits:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalWinBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Unique Agents:{" "}
+          <span className="text-green-400 font-semibold" id="uniqueWithdrawalAgents">
+            0
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Total Count:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalCount">
+            1
+          </span>
+        </p>
+      </div>
+      <div>
+        <h2 className="text-sm  font-semibold mb-1">
+          Payment Method
+        </h2>
+        <p className="d-data text-black">
+          bKash:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Rocket:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalWinBDT">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Upay:{" "}
+          <span className="text-green-400 font-semibold" id="totalWithdrawalCount">
+            ৳ 0.00
+          </span>
+        </p>
+        <p className="d-data text-black">
+          Nagod:{" "}
+          <span className="text-green-400 font-semibold" id="uniqueWithdrawalAgents">
+            ৳ 0.00
+          </span>
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
+
           <div>
             {!showOrderDetails && (
               <div className="bg-white rounded-lg shadow-md p-6">
@@ -342,22 +475,22 @@ const [ number , setNumber] = useState()
                   </div>
                 </div>
                 <div className="mb-4">
-                    <label
-                      htmlFor="amount"
-                      className="block text-gray-700 text-sm font-bold mb-2"
-                    >
-                      Phone Number
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="Type Phone Number"
-                      value={number}
-                      onChange={(e) => setNumber(e.target.value)}
-                      id="amount"
-                      name="amount"
-                      className="w-full border border-color rounded px-3 py-2"
-                    />
-                  </div>
+                  <label
+                    htmlFor="amount"
+                    className="block text-gray-700 text-sm font-bold mb-2"
+                  >
+                    Phone Number
+                  </label>
+                  <input
+                    type="text"
+                    placeholder="Type Phone Number"
+                    value={number}
+                    onChange={(e) => setNumber(e.target.value)}
+                    id="amount"
+                    name="amount"
+                    className="w-full border border-color rounded px-3 py-2"
+                  />
+                </div>
                 <div>
                   <button
                     onClick={handleSentData}

@@ -1,15 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
+import Swal from "sweetalert2";
 
 const CustomerList = () => {
   const [openModal, setOpenModal] = useState(false);
+  const [openEdit, setOpenEdit] = useState(false);
+  const [id, setSingleIdModel] = useState();
   const [pageNumber, setPageNumber] = useState(0);
   const [customer, setCustomer] = useState();
   const [uniqueId, setUniqueId] = useState();
   const [type, setType] = useState();
   const [condition, setCondition] = useState();
   const [pointRate, setPointRate] = useState();
+const [search, setSearch] = useState()
+
   console.log(customer, uniqueId, type, condition, pointRate);
   const page = 5; // Adjust the page numbers the way you want
   const updatePageNumber = (num) => {
@@ -18,6 +23,28 @@ const CustomerList = () => {
     }
     setPageNumber(num);
   };
+
+useEffect(()=> {
+  fetch(`http://localhost:5000/api?search=${search}`, {
+    method: "GET",
+    headers: {
+      "Content-Type": "application/json",
+    },
+  })
+    .then((res) => {
+      if (Response.ok) {
+        console.log("data is successfully sent");
+        toast.success("Successfully New User Created!");
+      } else {
+        console.error("Failed to send data");
+        toast.error("Failed to create Customer");
+      }
+    })
+    .catch((error) => {
+      console.error("Network error", error);
+      toast.error("Network error");
+    });
+},[])
 
   const handleSubmit = () => {
     const data = {
@@ -51,6 +78,88 @@ const CustomerList = () => {
 
       });
   };
+
+  const handleEdit = (id) => {
+    setSingleIdModel(id)
+    setOpenEdit(true)
+  }
+
+  const HandleEditedData = (id) => {
+    const data = {
+      customerName: customer,
+      uniqueId: uniqueId,
+      type: type,
+      condition: condition,
+      pointRate: pointRate,
+    };
+
+    fetch(`http://example.com/${id}`, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (Response.ok) {
+          console.log("data is successfully sent");
+          toast.success('Successfully New User Created!')
+        } else {
+          console.error("Failed to send data");
+          toast.error("Failed to create Customer")
+
+        }
+      })
+      .catch((error) => {
+        console.error("Network error", error);
+        toast.error("Network error")
+
+      });
+  }
+
+
+
+  const handleDelete = async (id) => {
+    Swal.fire({
+      title: 'Are you sure?',
+      text: "You won't be able to revert this!",
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#3085d6',
+      cancelButtonColor: '#d33',
+      confirmButtonText: 'Yes, delete it!',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await fetch(`http://example.com/${id}`, {
+            method: 'DELETE',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+          });
+  
+          if (response.ok) {
+            console.log('Resource successfully deleted');
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Your file has been deleted.',
+              icon: 'success',
+            });
+          } else {
+            console.error('Failed to delete resource');
+          }
+        } catch (error) {
+          console.error('Network error:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Network error',
+            icon: 'error',
+          });
+        }
+      }
+    });
+  };
+  
   return (
     <div className="flex flex-col  justify-center gap-5">
       <div className="flex items-center justify-between mt-5">
@@ -67,6 +176,8 @@ const CustomerList = () => {
             className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
             type="text"
             name=""
+            value={search}
+            onChange={()=> setSearch(e.target.value)}
             placeholder="Search by Name or Id"
             id=""
           />
@@ -111,13 +222,13 @@ const CustomerList = () => {
                 <td className="px-6 py-4">$2999</td>
                 <td className="px-6 py-4 text-right">
                   <Link
-                    
+                      onClick={()=> handleEdit(id)}
                     className="font-medium mr-2 text-color hover:underline"
                   >
                     Edit
                   </Link>
                   <Link
-                    
+                    onClick={()=> handleDelete(id)}
                     className="font-medium text-color hover:underline"
                   >
                     Delete
@@ -138,7 +249,7 @@ const CustomerList = () => {
 
                 <td className="px-6 py-4 text-right">
                   <a
-                    href="#"
+                   onClick={()=> setOpenEdit(true)}
                     className="font-medium text-color  hover:underline"
                   >
                     Edit
@@ -159,7 +270,7 @@ const CustomerList = () => {
                 <td className="px-6 py-4">$99</td>
                 <td className="px-6 py-4 text-right">
                   <a
-                    href="#"
+                    onClick={()=> setOpenEdit(true)}
                     className="font-medium text-color  hover:underline"
                   >
                     Edit
@@ -294,6 +405,138 @@ const CustomerList = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
+                className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg  dark:bg-gray-700 dark:hover:bg-gray-800"
+              >
+                Submit
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+
+      <div className="mx-auto flex w-72 items-center justify-center">
+        <div
+          onClick={() => setOpenEdit(false)}
+          className={`fixed z-[100] flex items-center justify-center ${
+            openEdit ? "opacity-1 visible" : "invisible opacity-0"
+          } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
+        >
+          <div
+            onClick={(e_) => e_.stopPropagation()}
+            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${
+              openEdit
+                ? "opacity-1 translate-y-0 duration-300"
+                : "-translate-y-20 opacity-0 duration-150"
+            }`}
+          >
+            <form className="px-5 pb-5 pt-3 lg:pb-10 lg:pt-5 lg:px-10">
+              <svg
+                onClick={() => setOpenEdit(false)}
+                className="mx-auto mr-0 w-10 cursor-pointer fill-black dark:fill-white"
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <g strokeWidth="0"></g>
+                <g
+                  id="SVGRepo_tracerCarrier"
+                  strokeLinecap="round"
+                  strokeLinejoin="round"
+                ></g>
+                <g id="SVGRepo_iconCarrier">
+                  <path d="M6.99486 7.00636C6.60433 7.39689 6.60433 8.03005 6.99486 8.42058L10.58 12.0057L6.99486 15.5909C6.60433 15.9814 6.60433 16.6146 6.99486 17.0051C7.38538 17.3956 8.01855 17.3956 8.40907 17.0051L11.9942 13.4199L15.5794 17.0051C15.9699 17.3956 16.6031 17.3956 16.9936 17.0051C17.3841 16.6146 17.3841 15.9814 16.9936 15.5909L13.4084 12.0057L16.9936 8.42059C17.3841 8.03007 17.3841 7.3969 16.9936 7.00638C16.603 6.61585 15.9699 6.61585 15.5794 7.00638L11.9942 10.5915L8.40907 7.00636C8.01855 6.61584 7.38538 6.61584 6.99486 7.00636Z"></path>
+                </g>
+              </svg>
+              <h1 className="pb-8 text-4xl backdrop-blur-sm">Edit Customer</h1>
+              <div className="space-y-5">
+                <div>
+                  <label htmlFor="email_navigate_ui_modal" className="block">
+                    Customer Name
+                  </label>
+                  <div className="relative">
+                    <input
+                      className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
+                      type="text"
+                      name=""
+                      value={customer}
+                      onChange={(e) => setCustomer(e.target.value)}
+                      placeholder="Customer Name"
+                      id=""
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="password_navigate_ui_modal" className="block">
+                    Unique ID
+                  </label>
+                  <div className="relative">
+                    <input
+                      className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
+                      type="text"
+                      name=""
+                      placeholder="Unique ID"
+                      id=""
+                      value={uniqueId}
+                      onChange={(e) => setUniqueId(e.target.value)}
+                    />
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="password_navigate_ui_modal" className="block">
+                    Type
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="customerId"
+                      name="customerId"
+                      value={type}
+                      onChange={(e) => setType(e.target.value)}
+                      className="w-full border border-color rounded px-4 py-2"
+                    >
+                      <option value="SMA">SMA</option>
+                      <option value="SA">SA </option>
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="password_navigate_ui_modal" className="block">
+                    Condition
+                  </label>
+                  <div className="relative">
+                    <select
+                      id="customerId"
+                      name="customerId"
+                      value={condition}
+                      onChange={(e) => setCondition(e.target.value)}
+                      className="w-full border border-color rounded px-4 py-2"
+                    >
+                      <option value="Withdraw">Withdraw</option>
+                      <option value="Non-Withdraw">Non-Withdraw</option>
+                      {/* Add more customer options as needed */}
+                    </select>
+                  </div>
+                </div>
+                <div>
+                  <label htmlFor="password_navigate_ui_modal" className="block">
+                    Point Rate
+                  </label>
+                  <div className="relative">
+                    <input
+                      className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
+                      type="text"
+                      name=""
+                      value={pointRate}
+                      onChange={(e) => setPointRate(e.target.value)}
+                      placeholder="Point Rate"
+                      id=""
+                    />
+                  </div>
+                </div>
+              </div>
+              {/* button type will be submit for handling form submission*/}
+              <button
+                type="button"
+                onClick={HandleEditedData}
                 className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Submit
