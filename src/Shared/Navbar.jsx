@@ -23,7 +23,7 @@ const Navbar = () => {
     return () => {
       document.removeEventListener("mousedown", closeDropDown);
     };
-  }, []);
+  }, [])
 
   return (
     <nav className="flex items-center justify-between bg-color rounded-md px-4 py-2 text-white">
