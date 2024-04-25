@@ -8,14 +8,21 @@ const CustomerList = () => {
   const [type, setType] = useState();
   const [condition, setCondition] = useState();
   const [pointRate, setPointRate] = useState();
+
+
   console.log(customer, uniqueId, type, condition, pointRate);
   const page = 5; // Adjust the page numbers the way you want
+
   const updatePageNumber = (num) => {
     if (num > page - 1 || 0 > num) {
       return setPageNumber(0);
     }
     setPageNumber(num);
   };
+
+  console.log(pageNumber);
+
+
 
   const handleSubmit = () => {
     const data = {
@@ -44,6 +51,9 @@ const CustomerList = () => {
         console.error("Network error", error);
       });
   };
+
+
+
   return (
     <div className="flex flex-col  justify-center gap-5">
       <div className="flex items-center justify-between mt-5">
