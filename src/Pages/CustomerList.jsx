@@ -24,7 +24,7 @@ const CustomerList = () => {
       return setPageNumber(0);
     }
     setPageNumber(num);
-  };
+  }
 
   const handleSubmit = () => {
     const data = {
