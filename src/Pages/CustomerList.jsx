@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const CustomerList = () => {
   const [openModal, setOpenModal] = useState(false);
@@ -43,12 +44,17 @@ const CustomerList = () => {
       .then((res) => {
         if (Response.ok) {
           console.log("data is successfully sent");
+          toast.success('Successfully New User Created!')
         } else {
           console.error("Failed to send data");
+          toast.error("Failed to create Customer")
+
         }
       })
-      .catch((errro) => {
+      .catch((error) => {
         console.error("Network error", error);
+        toast.error("Network error")
+
       });
   };
 
