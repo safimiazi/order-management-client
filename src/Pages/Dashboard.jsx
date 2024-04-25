@@ -1,12 +1,49 @@
 import React, { useState } from "react";
+import toast from "react-hot-toast";
 
 const Dashboard = () => {
   // State variables for order details
   const [orderId, setOrderId] = useState("");
   const [points, setPoints] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
-  const [transactionType, setTransactionType] = useState("deposit");
+  const [transactionType, setTransactionType] = useState();
   const [showTransactionNumber, setShowTransactionNumber] = useState(false);
+  const [customerId, setCUstomerId] = useState();
+  const [transectionNumber, setShowTransactionvalue] = useState();
+  const [amount, setAmount] = useState();
+  const [paymentType, setPaymentType] = useState();
+  const [searchValue, setSearchValue] = useState();
+
+  const handleSentData = () => {
+    const data = {
+      customerId,
+      transectionNumber,
+      amount,
+      paymentType,
+      orderId,
+      points,
+    };
+    fetch("http://localhost:5000", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((res) => {
+        if (Response.ok) {
+          console.log("data is successfully sent");
+          toast.success("Successfully New User Created!");
+        } else {
+          console.error("Failed to send data");
+          toast.error("Failed to create Customer");
+        }
+      })
+      .catch((error) => {
+        console.error("Network error", error);
+        toast.error("Network error");
+      });
+  };
 
   const handleTransactionTypeChange = (e) => {
     setTransactionType(e.target.value);
@@ -19,7 +56,8 @@ const Dashboard = () => {
 
   // Function to calculate points
   const calculatePoints = (amount) => {
-    return (amount * 0.56).toFixed(2);
+    const points = amount / 100;
+    return points;
   };
 
   // Function to handle form submission
@@ -35,9 +73,35 @@ const Dashboard = () => {
   // Function to copy text
   const copyText = (text) => {
     navigator.clipboard.writeText(text);
-    alert("Copied: " + text);
+    toast.success("Copied");
   };
 
+  const handleConditionData = (search) => {
+    fetch(`http://localhost:5000/api?search=${search}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    })
+      .then((res) => {
+        if (Response.ok) {
+          console.log("data is successfully sent");
+          toast.success("Successfully New User Created!");
+        } else {
+          console.error("Failed to send data");
+          toast.error("Failed to create Customer");
+        }
+      })
+      .catch((error) => {
+        console.error("Network error", error);
+        toast.error("Network error");
+      });
+  };
+
+  const handleSearch = (e) => {
+    setSearchValue(e.target.value);
+    handleConditionData(e.target.value);
+  };
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
@@ -45,6 +109,8 @@ const Dashboard = () => {
           <input
             id="userIdInput"
             type="text"
+            value={searchValue}
+            onChange={handleSearch}
             placeholder="User ID"
             className="w-full py-2 px-4 rounded-l-md focus:outline-none"
           />
@@ -56,19 +122,35 @@ const Dashboard = () => {
           </button>
         </div>
         <div className="flex gap-2">
-        <button className="rounded-lg bg-color px-4  hover:bg-orange-600  py-2  text-white duration-300 active:scale-95">Today</button>
+          <button
+            onClick={() => handleConditionData("today")}
+            className="rounded-lg bg-color px-4  hover:bg-orange-600  py-2  text-white duration-300 active:scale-95"
+          >
+            Today
+          </button>
 
-
-          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
+          <button
+            onClick={() => handleConditionData("this-week")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
             This Week
           </button>
-          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
+          <button
+            onClick={() => handleConditionData("last-week")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
             Last Week
           </button>
-          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
+          <button
+            onClick={() => handleConditionData("this-month")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
             This Month
           </button>
-          <button className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 ">
+          <button
+            onClick={() => handleConditionData("last-month")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
             Last Month
           </button>
         </div>
@@ -96,12 +178,13 @@ const Dashboard = () => {
                     <select
                       id="customerId"
                       name="customerId"
+                      value={customerId}
+                      onChange={(e) => setCUstomerId(e.target.value)}
                       className="w-full border border-color focus:border-color active:border-color rounded px-3 py-2"
                     >
-                      <option value="1">Customer 1</option>
-                      <option value="2">Customer 2</option>
-                      <option value="3">Customer 3</option>
-                      {/* Add more customer options as needed */}
+                      <option value="Customer1">Customer1</option>
+                      <option value="Customer2">Customer2</option>
+                      <option value="Customer3">Customer3</option>
                     </select>
                   </div>
                   <div className="mb-4">
@@ -134,6 +217,10 @@ const Dashboard = () => {
                         type="text"
                         id="transactionNumber"
                         name="transactionNumber"
+                        value={transectionNumber}
+                        onChange={(e) =>
+                          setShowTransactionvalue(e.target.value)
+                        }
                         className="w-full border border-color rounded px-3 py-2"
                       />
                     </div>
@@ -147,6 +234,8 @@ const Dashboard = () => {
                     </label>
                     <input
                       type="text"
+                      value={amount}
+                      onChange={(e) => setAmount(e.target.value)}
                       id="amount"
                       name="amount"
                       className="w-full border border-color rounded px-3 py-2"
@@ -162,6 +251,8 @@ const Dashboard = () => {
                     <select
                       id="paymentType"
                       name="paymentType"
+                      value={paymentType}
+                      onChange={(e) => setPaymentType(e.target.value)}
                       className="w-full border border-color rounded px-3 py-2"
                     >
                       <option value="bkash">Bkash</option>
@@ -219,7 +310,10 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div>
-                  <button className="bg-color  text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4">
+                  <button
+                    onClick={handleSentData}
+                    className="bg-color  text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4"
+                  >
                     Submit
                   </button>
                   <button
