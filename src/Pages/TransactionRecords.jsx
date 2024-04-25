@@ -1,23 +1,51 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 
 const TransactionRecords = () => {
-  const [pageNumber,setPageNumber] = useState(0)
-  const page = 5 // Adjust the page numbers the way you want
-  const updatePageNumber = (num)=>{
-      if((num > (page - 1)) || (0 > num)){ return setPageNumber(0) }
-      setPageNumber(num)
+  const [pageNumber, setPageNumber] = useState(0) // page number 
+  const [getingTranstionData, setTransationData] = useState([]) // geting all transation data form the server list 
+  const [transactionInfoLength, setTransactionInfoLength] = useState(0) // geting all the transationinfo lenght 
+  const [search, setSearch] = useState('')
+
+  // =========== paginstaion functionlities ===================
+
+  const page = Math.floor(transactionInfoLength / 50) || 0 ; // Adjust the page numbers the way you want
+  console.log(page,getingTranstionData);
+  const updatePageNumber = (num) => {
+    if ((num > (page - 1)) || (0 > num)) { return setPageNumber(0) }
+    setPageNumber(num)
   }
+
+  console.log(search, pageNumber);
+  // =========== call api for see trasaction info and pgiation , search functionality =============
+  useEffect(() => {
+
+    const url = new URL('http://localhost:5000/getTransationDAta');
+    const params = { search: search, pageNumber: pageNumber };
+    url.search = new URLSearchParams(params).toString();
+
+    const getTransactionInfo = async () => {
+      const transactionData = await fetch(url)
+      const getingTransation = await transactionData.json()
+      console.log(getingTransation);
+      setTransactionInfoLength(getingTransation?.getingTransationResult?.TotalDataLenght)
+      setTransationData(getingTransation?.getingTransationResult?.finalliyValue)
+    }
+    getTransactionInfo()
+  }, [search,pageNumber, ])
+
   return (
     <div className="flex flex-col gap-5">
-         <div className="flex items-center justify-between mt-5">
+      <div className="flex items-center justify-between mt-5">
         <div>
-         <h3 className="text-2xl font-bold">Transaction Records</h3>
+          <h3 className="text-2xl font-bold">Transaction Records</h3>
         </div>
         <div>
-          <input
+        <input
             className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
             type="text"
             name=""
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by Name or Id"
             id=""
           />
@@ -39,50 +67,22 @@ const TransactionRecords = () => {
             </tr>
           </thead>
           <tbody>
-            <tr className="bg-white border-b">
-              <td className="px-4 py-2">1</td>
-              <td className="px-4 py-2">SMA</td>
-              <td className="px-4 py-2">12345</td>
-              <td className="px-4 py-2">Withdraw</td>
-              <td className="px-4 py-2">$100</td>
-              <td className="px-4 py-2">56</td>
-              <td className="px-4 py-2">2024-04-15</td>
-              <td className="px-4 py-2">TRX123</td>
-              <td className="px-4 py-2">ORD-56789</td>
-            </tr>
-            <tr className="bg-white border-b">
-              <td className="px-4 py-2">2</td>
-              <td className="px-4 py-2">SMA</td>
-              <td className="px-4 py-2">12345</td>
-              <td className="px-4 py-2">Withdraw</td>
-              <td className="px-4 py-2">$100</td>
-              <td className="px-4 py-2">7586</td>
-              <td className="px-4 py-2">2024-04-15</td>
-              <td className="px-4 py-2">TRX123</td>
-              <td className="px-4 py-2">ORD-56789</td>
-            </tr>
-            <tr className="bg-white border-b">
-              <td className="px-4 py-2">3</td>
-              <td className="px-4 py-2">SMA</td>
-              <td className="px-4 py-2">12345</td>
-              <td className="px-4 py-2">Withdraw</td>
-              <td className="px-4 py-2">$100</td>
-              <td className="px-4 py-2">5641</td>
-              <td className="px-4 py-2">2024-04-15</td>
-              <td className="px-4 py-2">TRX123</td>
-              <td className="px-4 py-2">ORD-56789</td>
-            </tr>
-            <tr className="bg-white border-b">
-              <td className="px-4 py-2">4</td>
-              <td className="px-4 py-2">SMA</td>
-              <td className="px-4 py-2">12345</td>
-              <td className="px-4 py-2">Withdraw</td>
-              <td className="px-4 py-2">$100</td>
-              <td className="px-4 py-2">60785</td>
-              <td className="px-4 py-2">2024-04-15</td>
-              <td className="px-4 py-2">TRX123</td>
-              <td className="px-4 py-2">ORD-56789</td>
-            </tr>
+            {/* view data transation information with table   */}
+            {
+              getingTranstionData?.map((item, index) => (
+                <tr className="bg-white border-b">
+                  <td className="px-4 py-2">{++index}</td>
+                  <td className="px-4 py-2">{item?.paymentType}</td>
+                  <td className="px-4 py-2">{item?.customerId}</td>
+                  <td className="px-4 py-2">{item?.paymentType}</td>
+                  <td className="px-4 py-2">{item?.amount}</td>
+                  <td className="px-4 py-2">{item?.points}</td>
+                  <td className="px-4 py-2">{item?.createdAt}</td>
+                  <td className="px-4 py-2">{item?.trans}</td>
+                  <td className="px-4 py-2">{item?.orderId}</td>
+                </tr>
+              ))
+            }
           </tbody>
         </table>
       </div>
@@ -125,11 +125,10 @@ const TransactionRecords = () => {
               onClick={() => {
                 setPageNumber(item);
               }}
-              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${
-                pageNumber === item
+              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${pageNumber === item
                   ? "bg-color text-white"
                   : "bg-white hover:bg-gray-200"
-              }   font-semibold text-gray-700   py-[8px] `}
+                }   font-semibold text-gray-700   py-[8px] `}
               key={item}
             >
               {item + 1}

@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import { getItem } from "localforage";
+import React, { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 
 const Dashboard = () => {
@@ -15,6 +16,32 @@ const Dashboard = () => {
   const [searchValue, setSearchValue] = useState();
   const [trans, setTrans] = useState();
   const [number, setNumber] = useState();
+  const [ allDataList,setAllDataList] = useState({})  // insertARrray inside the data form the filed list 
+  const [userDataList, setUserDataList] = useState([]) // registerUser data list get from the server 
+
+
+
+
+  // ================== data filter for checkout customer id info ===================
+
+  const filterCustomerData = userDataList?.find((item,index) => item.uniqueId ===  customerId)
+
+
+  // ========================== all register user api call here ======================
+
+  useEffect(()=>{
+       const getingAllregisterUser = async() =>{
+            const userData = await fetch('http://localhost:5000/getingRegisterUser')
+            const userDataString = await userData.json()
+            console.log(userDataString);
+            setUserDataList(userDataString?.finalResulst)
+       }
+       getingAllregisterUser()
+  },[])
+
+
+
+  // =============================== all transation list here , and api call ========================
   const handleSentData = () => {
     const data = {
       customerId,
@@ -26,27 +53,48 @@ const Dashboard = () => {
       trans,
       number,
     };
-    fetch("http://localhost:5000", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (Response.ok) {
-          console.log("data is successfully sent");
-          toast.success("Successfully New User Created!");
-        } else {
-          console.error("Failed to send data");
-          toast.error("Failed to create Customer");
-        }
-      })
-      .catch((error) => {
-        console.error("Network error", error);
-        toast.error("Network error");
-      });
+    setAllDataList(data)
+    console.log(data);
   };
+
+ 
+
+  // call api here for insert all the transation 
+
+  useEffect(() => {
+    const insertDataToDataBase = async () => {
+        try {
+            const response = await fetch('http://localhost:5000/insertTransaction', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(allDataList)
+            });
+
+            if (response.ok) {
+                // Data successfully added
+                const jsonData = await response.json();
+                console.log(jsonData);
+                toast.success('Successfully added transation id');
+            } else {
+                // Failed to add data
+                console.error('Failed to add data:', response.statusText);
+                toast.error('Failed to add data');
+            }
+        } catch (error) {
+            console.error('Error adding data:', error);
+            toast.error('Error adding data');
+        }
+    };
+
+    insertDataToDataBase();
+
+}, [allDataList]);
+
+
+
+
 
   const handleTransactionTypeChange = (e) => {
     setTransactionType(e.target.value);
@@ -59,7 +107,7 @@ const Dashboard = () => {
 
   // Function to calculate points
   const calculatePoints = (amount) => {
-    const points = amount / 100;
+    const points = amount / filterCustomerData?.pointRate;
     return points;
   };
 
@@ -73,6 +121,8 @@ const Dashboard = () => {
     }
     return transactionId;
   }
+
+
 
   // Function to handle form submission
   const handleSubmit = () => {
@@ -92,8 +142,14 @@ const Dashboard = () => {
     toast.success("Copied");
   };
 
+// dashboard search functionlity add here ====================================================
+
+
   const handleConditionData = (search) => {
-    fetch(`http://localhost:5000/api?search=${search}`, {
+
+    console.log(search);
+
+    fetch(`http://localhost:5000/getingTotalData?search=${search}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -113,6 +169,8 @@ const Dashboard = () => {
         toast.error("Network error");
       });
   };
+
+
 
   const handleSearch = (e) => {
     setSearchValue(e.target.value);
@@ -146,10 +204,10 @@ const Dashboard = () => {
           </button>
 
           <button
-            onClick={() => handleConditionData("this-week")}
+            onClick={() => handleConditionData("fastWeek")}
             className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
           >
-            This Week
+            Fast Week
           </button>
           <button
             onClick={() => handleConditionData("last-week")}
@@ -158,16 +216,16 @@ const Dashboard = () => {
             Last Week
           </button>
           <button
+            onClick={() => handleConditionData("last-month")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
+            Last month
+          </button>
+          <button
             onClick={() => handleConditionData("this-month")}
             className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
           >
             This Month
-          </button>
-          <button
-            onClick={() => handleConditionData("last-month")}
-            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
-          >
-            Last Month
           </button>
         </div>
       </div>
@@ -330,9 +388,11 @@ const Dashboard = () => {
                       onChange={(e) => setCUstomerId(e.target.value)}
                       className="w-full border border-color focus:border-color active:border-color rounded px-3 py-2"
                     >
-                      <option value="Customer1">Customer1</option>
-                      <option value="Customer2">Customer2</option>
-                      <option value="Customer3">Customer3</option>
+                      {
+                          userDataList?.map((item,index)=>(
+                            <option key={index} value={item?.uniqueId}>{item?.uniqueId}</option>
+                          ))
+                      }
                     </select>
                   </div>
                   <div className="mb-4">
@@ -349,8 +409,7 @@ const Dashboard = () => {
                       onChange={handleTransactionTypeChange}
                       value={transactionType}
                     >
-                      <option value="deposit">Deposit</option>
-                      <option value="withdraw">Withdraw</option>
+                      <option value={filterCustomerData?.condition}>{filterCustomerData?.condition}</option>
                     </select>
                   </div>
                   {showTransactionNumber && (
@@ -448,7 +507,7 @@ const Dashboard = () => {
                     Points
                   </label>
                   <div className="flex items-center justify-between border border-color rounded-md py-2 px-4">
-                    <span>{points}</span>
+                    <span>{points?.toFixed(2)}</span>
                     <button
                       onClick={() => copyText(points)}
                       className="text-blue-500 hover:text-blue-700 focus:outline-none"

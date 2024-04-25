@@ -3,20 +3,27 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
+
 const CustomerList = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
-  const [id, setSingleIdModel] = useState();
+  const [eidteId, setSingleIdModel] = useState();
   const [pageNumber, setPageNumber] = useState(0);
   const [customer, setCustomer] = useState();
-  const [uniqueId, setUniqueId] = useState();
+  const [uniqueId, setUniqueId] = useState('');
   const [type, setType] = useState();
   const [condition, setCondition] = useState();
   const [pointRate, setPointRate] = useState();
-const [search, setSearch] = useState()
+  const [search, setSearch] = useState()
+  const [allData, setAlldata] = useState({})   // all the data addd here 
+  const [ViewTableData, setViewTableData] = useState([]) // viwe the data to table list get form server 
+  const [dataListLenght,setDataListLenght] = useState(0) // total data lenght here 
+
 
   console.log(customer, uniqueId, type, condition, pointRate);
-  const page = 5; // Adjust the page numbers the way you want
+  const pages = Math.ceil(dataListLenght / 50) ; 
+  const page = pages; // Adjust the page numbers the way you want
+  console.log(pages);
   const updatePageNumber = (num) => {
     if (num > page - 1 || 0 > num) {
       return setPageNumber(0);
@@ -24,65 +31,111 @@ const [search, setSearch] = useState()
     setPageNumber(num);
   }
 
-useEffect(()=> {
-  fetch(`http://localhost:5000/api?search=${search}`, {
-    method: "GET",
-    headers: {
-      "Content-Type": "application/json",
-    },
-  })
-    .then((res) => {
-      if (Response.ok) {
-        console.log("data is successfully sent");
-        toast.success("Successfully New User Created!");
-      } else {
-        console.error("Failed to send data");
-        toast.error("Failed to create Customer");
+
+  /// ===================================== search functionality added the  =====================================
+
+  // search value and pagiation value add within array 
+ 
+  useEffect(() => {
+
+    const url = new URL('http://localhost:5000/getClientData');
+    url.searchParams.append('pages', pageNumber);
+    url.searchParams.append('searchValue', search);
+
+    // geting data search and pagination 
+    const fetchData = async () => {
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        // Use the data here
+        console.log(data);
+        setViewTableData(data?.clientDataList?.finalliyValue)
+        setDataListLenght(data?.clientDataList?.TotalDataLenght)
+      } catch (error) {
+        console.error('Error fetching data:', error);
       }
-    })
-    .catch((error) => {
-      console.error("Network error", error);
-      toast.error("Network error");
-    });
-},[])
+    };
+
+    fetchData();
+
+  }, [search,pageNumber])
+
+  console.log(search);
+
+  // data insert section ================================  insert data to database =======================================
 
   const handleSubmit = () => {
     const data = {
-      customerName: customer,
       uniqueId: uniqueId,
+      customerName: customer,
       type: type,
       condition: condition,
       pointRate: pointRate,
     };
-
-    fetch("http://localhost:5000", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (Response.ok) {
-          console.log("data is successfully sent");
-          toast.success('Successfully New User Created!')
-        } else {
-          console.error("Failed to send data");
-          toast.error("Failed to create Customer")
-
-        }
-      })
-      .catch((error) => {
-        console.error("Network error", error);
-        toast.error("Network error")
-
-      });
+    setAlldata(data)
   };
+
+
+  useEffect(() => {
+
+    const registerUserInsertData = async () => {
+      try {
+        const userDataJson = await fetch("http://localhost:5000/clientListItem", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(allData),
+        });
+        
+        const userDataListString = await userDataJson.json();
+        if (userDataListString) {
+          console.log(userDataListString, 'user list check api');
+          if (userDataListString?.result?.message ===  'successfully insert data ') {
+              toast.success('successfully added client')
+          }
+        }
+      } catch (error) {
+        console.error("Error while registering user:", error);
+      }
+    }
+  
+    registerUserInsertData();
+  }, [allData]);
+
+
+  // write fuction for genarete unique id  for identifying users 
+  useEffect(() => {
+    const generateUniqueId = () => {
+      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+      let uniqueId = '';
+      for (let i = 0; i < 8; i++) {
+        const randomIndex = Math.floor(Math.random() * characters.length);
+        uniqueId += characters[randomIndex];
+      }
+      setUniqueId(uniqueId)
+    };
+
+    generateUniqueId();
+  }, [])
 
   const handleEdit = (id) => {
     setSingleIdModel(id)
     setOpenEdit(true)
   }
+
+
+
+  // ============= user edite data find =========================
+
+
+  const singleUserEdite = ViewTableData?.find((item, index)=> item._id === eidteId )
+  console.log(singleUserEdite);
+  
+
+// ============== user edite here =====================================
+
+
 
   const HandleEditedData = (id) => {
     const data = {
@@ -93,7 +146,9 @@ useEffect(()=> {
       pointRate: pointRate,
     };
 
-    fetch(`http://example.com/${id}`, {
+    console.log(data , eidteId ,'check value');
+
+    fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',
@@ -119,6 +174,8 @@ useEffect(()=> {
 
 
 
+// ============== user deleted api call here  ====================================
+
   const handleDelete = async (id) => {
     Swal.fire({
       title: 'Are you sure?',
@@ -131,13 +188,13 @@ useEffect(()=> {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(`http://example.com/${id}`, {
+          const response = await fetch(`http://localhost:5000/deleteClientData/${id}`, {
             method: 'DELETE',
             headers: {
               'Content-Type': 'application/json',
             },
           });
-  
+
           if (response.ok) {
             console.log('Resource successfully deleted');
             Swal.fire({
@@ -159,9 +216,10 @@ useEffect(()=> {
       }
     });
   };
-  
+
   return (
     <div className="flex flex-col  justify-center gap-5">
+      {/* modal button here  */}
       <div className="flex items-center justify-between mt-5">
         <div>
           <button
@@ -177,16 +235,19 @@ useEffect(()=> {
             type="text"
             name=""
             value={search}
-            onChange={()=> setSearch(e.target.value)}
+            onChange={(e) => setSearch(e.target.value)}
             placeholder="Search by Name or Id"
             id=""
           />
         </div>
       </div>
+
+      {/* Table List Name here  */}
       <div>
         <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
           <table className="w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400">
             <thead className="text-xs text-gray-700 uppercase bg-gray-100 dark:bg-gray-700 dark:text-gray-400">
+              {/*  table name list here  */}
               <tr>
                 <th scope="col" className="px-6 py-3">
                   Customer Name
@@ -208,94 +269,59 @@ useEffect(()=> {
                 </th>
               </tr>
             </thead>
+
+            {/* table body add here  */}
             <tbody>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  Apple MacBook Pro 17"
-                </th>
-                <td className="px-6 py-4">Silver</td>
-                <td className="px-6 py-4">Laptop</td>
-                <td className="px-6 py-4">$2999</td>
-                <td className="px-6 py-4">$2999</td>
-                <td className="px-6 py-4 text-right">
-                  <Link
-                      onClick={()=> handleEdit(id)}
-                    className="font-medium mr-2 text-color hover:underline"
-                  >
-                    Edit
-                  </Link>
-                  <Link
-                    onClick={()=> handleDelete(id)}
-                    className="font-medium text-color hover:underline"
-                  >
-                    Delete
-                  </Link>
-                </td>
-              </tr>
-              <tr className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  Microsoft Surface Pro
-                </th>
-                <td className="px-6 py-4">White</td>
-                <td className="px-6 py-4">Laptop PC</td>
-                <td className="px-6 py-4">$1999</td>
-                <td className="px-6 py-4">$2999</td>
+              {
+                ViewTableData?.map((item, index) => (
+                  <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
+                    <th
+                      scope="row"
+                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                    >
+                      {item?.customerName}
+                    </th>
+                    <td className="px-6 py-4">{item?.uniqueId}</td>
+                    <td className="px-6 py-4">{item?.type}</td>
+                    <td className="px-6 py-4">{item?.condition}</td>
+                    <td className="px-6 py-4">{item?.pointRate}</td>
+                    <td className="px-6 py-4 text-right">
+                      <Link
+                        onClick={() => handleEdit(item?._id)}
+                        className="font-medium mr-2 text-color hover:underline"
+                      >
+                        Edit
+                      </Link>
+                      <Link
+                        onClick={() => handleDelete(item?._id)}
+                        className="font-medium text-color hover:underline"
+                      >
+                        Delete
+                      </Link>
+                    </td>
+                  </tr>
+                ))
+              }
 
-                <td className="px-6 py-4 text-right">
-                  <a
-                   onClick={()=> setOpenEdit(true)}
-                    className="font-medium text-color  hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td>
-              </tr>
-              <tr className="bg-white dark:bg-gray-800 hover:bg-gray-50 dark:hover:bg-gray-600">
-                <th
-                  scope="row"
-                  className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
-                >
-                  Magic Mouse 2
-                </th>
-                <td className="px-6 py-4">Black</td>
-                <td className="px-6 py-4">Accessories</td>
-                <td className="px-6 py-4">$2999</td>
-
-                <td className="px-6 py-4">$99</td>
-                <td className="px-6 py-4 text-right">
-                  <a
-                    onClick={()=> setOpenEdit(true)}
-                    className="font-medium text-color  hover:underline"
-                  >
-                    Edit
-                  </a>
-                </td>
-              </tr>
             </tbody>
           </table>
         </div>
       </div>
 
+
+      {/* modla here  */}
       <div className="mx-auto flex w-72 items-center justify-center">
         <div
           onClick={() => setOpenModal(false)}
-          className={`fixed z-[100] flex items-center justify-center ${
-            openModal ? "opacity-1 visible" : "invisible opacity-0"
-          } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
+          className={`fixed z-[100] flex items-center justify-center ${openModal ? "opacity-1 visible" : "invisible opacity-0"
+            } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
         >
           <div
             onClick={(e_) => e_.stopPropagation()}
-            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${
-              openModal
-                ? "opacity-1 translate-y-0 duration-300"
-                : "-translate-y-20 opacity-0 duration-150"
-            }`}
+            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${openModal
+              ? "opacity-1 translate-y-0 duration-300"
+              : "-translate-y-20 opacity-0 duration-150"
+              }`}
           >
             <form className="px-5 pb-5 pt-3 lg:pb-10 lg:pt-5 lg:px-10">
               <svg
@@ -414,20 +440,19 @@ useEffect(()=> {
         </div>
       </div>
 
+
       <div className="mx-auto flex w-72 items-center justify-center">
         <div
           onClick={() => setOpenEdit(false)}
-          className={`fixed z-[100] flex items-center justify-center ${
-            openEdit ? "opacity-1 visible" : "invisible opacity-0"
-          } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
+          className={`fixed z-[100] flex items-center justify-center ${openEdit ? "opacity-1 visible" : "invisible opacity-0"
+            } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
         >
           <div
             onClick={(e_) => e_.stopPropagation()}
-            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${
-              openEdit
-                ? "opacity-1 translate-y-0 duration-300"
-                : "-translate-y-20 opacity-0 duration-150"
-            }`}
+            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${openEdit
+              ? "opacity-1 translate-y-0 duration-300"
+              : "-translate-y-20 opacity-0 duration-150"
+              }`}
           >
             <form className="px-5 pb-5 pt-3 lg:pb-10 lg:pt-5 lg:px-10">
               <svg
@@ -545,6 +570,8 @@ useEffect(()=> {
           </div>
         </div>
       </div>
+
+
       {/* pagination */}
       <div className="flex select-none justify-center items-center bg-white shadow-lg rounded-sm w-fit mx-auto">
         {/* left arrow */}
@@ -585,11 +612,10 @@ useEffect(()=> {
               onClick={() => {
                 setPageNumber(item);
               }}
-              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${
-                pageNumber === item
-                  ? "bg-color text-white"
-                  : "bg-white hover:bg-gray-200"
-              }   font-semibold text-gray-700   py-[8px] `}
+              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${pageNumber === item
+                ? "bg-color text-white"
+                : "bg-white hover:bg-gray-200"
+                }   font-semibold text-gray-700   py-[8px] `}
               key={item}
             >
               {item + 1}
