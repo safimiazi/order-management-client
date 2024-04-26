@@ -18,9 +18,25 @@ const Dashboard = () => {
   const [number, setNumber] = useState();
   const [ allDataList,setAllDataList] = useState({})  // insertARrray inside the data form the filed list 
   const [userDataList, setUserDataList] = useState([]) // registerUser data list get from the server 
+  const [search2, setSearch2] = useState(); // default value for rendaring and search 
+  const [allTransationData,setAllTransationData] = useState([
+    {message:'geting a data successsfully from the database '},
+    {TotalAmount : 0},
+    {TotalPoints : 0},
+    {TotalDeposit : 0},
+    {TotalWithdrawalAmount : 0},
+    {TotalWithdrawalCredit : 0},
+    {TotalPaymentMethodbkash : 0},
+    {TotalPaymentMethodRoket : 0},
+    {TotalPaymentMethodUpay : 0},
+    {TotalPaymentMethodNogod : 0},
+    {TotalPaymentMethodBank : 0}
+])  // store data all the transation list data 
+// Regular expression to match the last number in the string
 
 
 
+// console.log(allTransationData[1].TotalAmount ,'all the stor state list check');
 
   // ================== data filter for checkout customer id info ===================
 
@@ -41,7 +57,7 @@ const Dashboard = () => {
 
 
 
-  // =============================== all transation list here , and api call ========================
+  // ========================= all transation list here , and api call ========================
   const handleSentData = () => {
     const data = {
       customerId,
@@ -142,33 +158,81 @@ const Dashboard = () => {
     toast.success("Copied");
   };
 
-// dashboard search functionlity add here ====================================================
+// dashboard search functionlity add here =========================================
 
+ // Function to update the search parameter
+ const handleConditionData = (search) => {
+  setSearch2(search);
+};
 
-  const handleConditionData = (search) => {
-
-    console.log(search);
-
-    fetch(`http://localhost:5000/getingTotalData?search=${search}`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-      },
-    })
-      .then((res) => {
-        if (Response.ok) {
-          console.log("data is successfully sent");
-          toast.success("Successfully New User Created!");
-        } else {
-          console.error("Failed to send data");
-          toast.error("Failed to create Customer");
-        }
-      })
-      .catch((error) => {
-        console.error("Network error", error);
-        toast.error("Network error");
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      // Fetch data from the API using the search parameter
+      const response = await fetch(`http://localhost:5000/getingTotalData?search=${search2}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
       });
+      // Check if the response is successful
+      if (response.ok) {
+        console.log("Data successfully retrieved");
+        const data = await response.json(); // Do something with the data
+        setAllTransationData(data) // set data to same state
+      } else {
+        console.error("Failed to retrieve data");
+        // Handle error condition here
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Handle error condition here
+    }
   };
+
+  // Call the fetchData function whenever search2 changes
+  fetchData();
+
+  // Since we want to refetch data whenever search2 changes, we include it as a dependency
+}, [search2]); // Dependency array contains search2
+
+
+// call the same api for see all the bydefault value get 
+
+useEffect(() => {
+
+  const fetchData = async () => {
+    try {
+      // Fetch data from the API using the search parameter
+      const response = await fetch(`http://localhost:5000/getingTotalData?search=${search2}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+      // Check if the response is successful
+      if (response.ok) {
+        console.log("Data successfully retrieved");
+        const data = await response.json();
+        setAllTransationData(data) // set data to same state
+        console.log(data); // Do something with the data
+      } else {
+        console.error("Failed to retrieve data");
+        // Handle error condition here
+      }
+    } catch (error) {
+      console.error("Error fetching data:", error);
+      // Handle error condition here
+    }
+  };
+
+  // Call the fetchData function whenever search2 changes
+  fetchData();
+
+}, []); // Dependency array contains search2
+
+
+
 
 
 
@@ -176,6 +240,8 @@ const Dashboard = () => {
     setSearchValue(e.target.value);
     handleConditionData(e.target.value);
   };
+
+
   return (
     <div className="container mx-auto px-4 py-8">
       <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
@@ -242,13 +308,14 @@ const Dashboard = () => {
         <p className="text-black">
           BDT:{" "}
           <span className="text-green-400 font-semibold" id="totalTopUpBDT">
-            ৳ 25,000.00
+         
+            ৳ {allTransationData[1].TotalAmount} 
           </span>
         </p>
         <p className="text-black">
           Credits:{" "}
           <span className="text-green-400 font-semibold" id="totalTopUpWinBDT">
-            ৳ 39,062.50
+            ৳ {allTransationData[2]?.TotalPoints}
           </span>
         </p>
         <p className="text-black">
@@ -278,25 +345,25 @@ const Dashboard = () => {
         <p className="d-data text-black">
           bKash:{" "}
           <span className="text-green-400 font-semibold" id="totalWithdrawalBDT">
-            ৳ 0.00
+            ৳ {allTransationData[6]?.TotalPaymentMethodbkash}
           </span>
         </p>
         <p className="d-data text-black">
           Rocket:{" "}
           <span className="text-green-400 font-semibold" id="totalWithdrawalWinBDT">
-            ৳ 0.00
+            ৳ {allTransationData[7]?.TotalPaymentMethodRoket}
           </span>
         </p>
         <p className="d-data text-black">
           Upay:{" "}
           <span className="text-green-400 font-semibold" id="totalWithdrawalCount">
-            ৳ 0.00
+            ৳ {allTransationData[8]?.TotalPaymentMethodUpay}
           </span>
         </p>
         <p className="d-data text-black">
           Nagod:{" "}
           <span className="text-green-400 font-semibold" id="uniqueWithdrawalAgents">
-            ৳ 0.00
+            ৳ {allTransationData[9]?.TotalPaymentMethodNogod}
           </span>
         </p>
       </div>
