@@ -92,7 +92,9 @@ const Dashboard = () => {
                 // Data successfully added
                 const jsonData = await response.json();
                 console.log(jsonData);
-                toast.success('Successfully added transation id');
+                if(jsonData.reusltInsert.message === 'successfully insert Transation data '){
+                  toast.success('Successfully added transation id');
+                }               
             } else {
                 // Failed to add data
                 console.error('Failed to add data:', response.statusText);
@@ -158,7 +160,7 @@ const Dashboard = () => {
     toast.success("Copied");
   };
 
-// dashboard search functionlity add here =========================================
+// dashboard search functionlity add here  with pagination and searching =====================
 
  // Function to update the search parameter
  const handleConditionData = (search) => {
