@@ -3,25 +3,23 @@ import toast from "react-hot-toast";
 import { Link } from "react-router-dom";
 import Swal from "sweetalert2";
 
-
 const CustomerList = () => {
   const [openModal, setOpenModal] = useState(false);
   const [openEdit, setOpenEdit] = useState(false);
   const [eidteId, setSingleIdModel] = useState();
   const [pageNumber, setPageNumber] = useState(0);
   const [customer, setCustomer] = useState();
-  const [uniqueId, setUniqueId] = useState('');
+  const [uniqueId, setUniqueId] = useState("");
   const [type, setType] = useState();
   const [condition, setCondition] = useState();
   const [pointRate, setPointRate] = useState();
-  const [search, setSearch] = useState()
-  const [allData, setAlldata] = useState({})   // all the data addd here 
-  const [ViewTableData, setViewTableData] = useState([]) // viwe the data to table list get form server 
-  const [dataListLenght,setDataListLenght] = useState(0) // total data lenght here 
-
+  const [search, setSearch] = useState();
+  const [allData, setAlldata] = useState({}); // all the data addd here
+  const [ViewTableData, setViewTableData] = useState([]); // viwe the data to table list get form server
+  const [dataListLenght, setDataListLenght] = useState(0); // total data lenght here
 
   console.log(customer, uniqueId, type, condition, pointRate);
-  const pages = Math.ceil(dataListLenght / 50) ; 
+  const pages = Math.ceil(dataListLenght / 50);
   const page = pages; // Adjust the page numbers the way you want
   console.log(pages);
   const updatePageNumber = (num) => {
@@ -29,36 +27,33 @@ const CustomerList = () => {
       return setPageNumber(0);
     }
     setPageNumber(num);
-  }
-
+  };
 
   /// ===================================== search functionality added the  =====================================
 
-  // search value and pagiation value add within array 
- 
+  // search value and pagiation value add within array
+
   useEffect(() => {
+    const url = new URL("https://agent-server-mu.vercel.app/getClientData");
+    url.searchParams.append("pages", pageNumber);
+    url.searchParams.append("searchValue", search);
 
-    const url = new URL('http://localhost:5000/getClientData');
-    url.searchParams.append('pages', pageNumber);
-    url.searchParams.append('searchValue', search);
-
-    // geting data search and pagination 
+    // geting data search and pagination
     const fetchData = async () => {
       try {
         const response = await fetch(url);
         const data = await response.json();
         // Use the data here
         console.log(data);
-        setViewTableData(data?.clientDataList?.finalliyValue)
-        setDataListLenght(data?.clientDataList?.TotalDataLenght)
+        setViewTableData(data?.clientDataList?.finalliyValue);
+        setDataListLenght(data?.clientDataList?.TotalDataLenght);
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
       }
     };
 
     fetchData();
-
-  }, [search,pageNumber])
+  }, [search, pageNumber]);
 
   console.log(search);
 
@@ -72,70 +67,88 @@ const CustomerList = () => {
       condition: condition,
       pointRate: pointRate,
     };
-    setAlldata(data)
+    setAlldata(data);
+    console.log("mohibulla", data)
   };
 
 
-  useEffect(() => {
+//new customer open modal
+const handleNewCustomer = () => {
+  setCustomer("");
+  setUniqueId("");
+  setType(""); // Set the default value for the selector
+  setCondition(""); // Set the default value for the selector
+  setPointRate("");
+  setOpenModal(true)
+}
 
+
+  useEffect(() => {
     const registerUserInsertData = async () => {
       try {
-        const userDataJson = await fetch("http://localhost:5000/clientListItem", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(allData),
-        });
-        
+        const userDataJson = await fetch(
+          "https://agent-server-mu.vercel.app/clientListItem",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(allData),
+          }
+        );
+    
         const userDataListString = await userDataJson.json();
         if (userDataListString) {
-          console.log(userDataListString, 'user list check api');
-          if (userDataListString?.result?.message ===  'successfully insert data ') {
-              toast.success('successfully added client')
+          console.log(userDataListString, "user list check api");
+          if (
+            userDataListString?.result?.message === "successfully insert data "
+          ) {
+            // Toast success message
+            toast.success("successfully added client");
+            // Update the state with the newly added data
+            setViewTableData(prevData => [...prevData, allData]);
+            // Optional: You can also increment the dataListLength state if needed
+            setDataListLength(prevLength => prevLength + 1);
           }
         }
       } catch (error) {
         console.error("Error while registering user:", error);
       }
-    }
-  
+    };
+    
     registerUserInsertData();
   }, [allData]);
 
+  // write fuction for genarete unique id  for identifying users
+  // useEffect(() => {
+  //   const generateUniqueId = () => {
+  //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //     let uniqueId = '';
+  //     for (let i = 0; i < 8; i++) {
+  //       const randomIndex = Math.floor(Math.random() * characters.length);
+  //       uniqueId += characters[randomIndex];
+  //     }
+  //     setUniqueId(uniqueId)
+  //   };
 
-  // write fuction for genarete unique id  for identifying users 
-  useEffect(() => {
-    const generateUniqueId = () => {
-      const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-      let uniqueId = '';
-      for (let i = 0; i < 8; i++) {
-        const randomIndex = Math.floor(Math.random() * characters.length);
-        uniqueId += characters[randomIndex];
-      }
-      setUniqueId(uniqueId)
-    };
-
-    generateUniqueId();
-  }, [])
+  //   generateUniqueId();
+  // }, [])
 
   const handleEdit = (id) => {
-    setSingleIdModel(id)
-    setOpenEdit(true)
-  }
+    setSingleIdModel(id);
+    setOpenEdit(true);
 
-
+    const singleUserEdit = ViewTableData?.find((item) => item._id === id);
+    setCustomer(singleUserEdit?.customerName);
+    setUniqueId(singleUserEdit?.uniqueId);
+    setType(singleUserEdit?.type); // Set the default value for the selector
+    setCondition(singleUserEdit?.condition); // Set the default value for the selector
+    setPointRate(singleUserEdit?.pointRate);
+  };
 
   // ============= user edite data find =========================
 
-
-  const singleUserEdite = ViewTableData?.find((item, index)=> item._id === eidteId )
-  console.log(singleUserEdite);
-  
-
-// ============== user edite here =====================================
-
-
+  // ============== user edite here =====================================
 
   const HandleEditedData = (id) => {
     const data = {
@@ -146,76 +159,89 @@ const CustomerList = () => {
       pointRate: pointRate,
     };
 
-    console.log(data , eidteId ,'check value');
+    console.log( "check value",data, eidteId);
 
-    fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
-      method: 'PUT',
+    fetch(`https://agent-server-mu.vercel.app/eiditeClientData/${eidteId}`, {
+      method: "PUT",
       headers: {
-        'Content-Type': 'application/json',
+        "Content-Type": "application/json",
       },
       body: JSON.stringify(data),
     })
       .then((res) => {
-        if (Response.ok) {
+        if (res.ok) {
           console.log("data is successfully sent");
-          toast.success('Successfully New User Created!')
+          toast.success("Successfully New User Created!");
+
+          setViewTableData(prevData => [...prevData, data]);
+
         } else {
           console.error("Failed to send data");
-          toast.error("Failed to create Customer")
-
+          toast.error("Failed to create Customer");
         }
       })
       .catch((error) => {
         console.error("Network error", error);
-        toast.error("Network error")
-
+        toast.error("Network error");
       });
-  }
+  };
 
-
-
-// ============== user deleted api call here  ====================================
+  // ============== user deleted api call here  ====================================
 
   const handleDelete = async (id) => {
     Swal.fire({
-      title: 'Are you sure?',
+      title: "Are you sure?",
       text: "You won't be able to revert this!",
-      icon: 'warning',
+      icon: "warning",
       showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Yes, delete it!',
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          const response = await fetch(`http://localhost:5000/deleteClientData/${id}`, {
-            method: 'DELETE',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-          });
-
+          const response = await fetch(
+            `https://agent-server-mu.vercel.app/deleteClientData/${id}`,
+            {
+              method: "DELETE",
+              headers: {
+                "Content-Type": "application/json",
+              },
+            }
+          );
+  
           if (response.ok) {
-            console.log('Resource successfully deleted');
+            console.log("ViewTableData", ViewTableData)
+            const updatedData = ViewTableData.filter(item => item._id !== id);
+  
+            // Set the state with the updated data
+            setViewTableData(updatedData);
+          
+            // Optional: You can also update the dataListLength state if needed
+            setDataListLenght(updatedData.length);        
+                console.log("Resource successfully deleted");
             Swal.fire({
-              title: 'Deleted!',
-              text: 'Your file has been deleted.',
-              icon: 'success',
+              title: "Deleted!",
+              text: "Your file has been deleted.",
+              icon: "success",
             });
           } else {
-            console.error('Failed to delete resource');
+            console.error("Failed to delete resource");
           }
         } catch (error) {
-          console.error('Network error:', error);
+          console.error("Network error:", error);
           Swal.fire({
-            title: 'Error!',
-            text: 'Network error',
-            icon: 'error',
+            title: "Error!",
+            text: "Network error",
+            icon: "error",
           });
         }
       }
     });
   };
+  
+
+  
 
   return (
     <div className="flex flex-col  justify-center gap-5">
@@ -223,7 +249,7 @@ const CustomerList = () => {
       <div className="flex items-center justify-between mt-5">
         <div>
           <button
-            onClick={() => setOpenModal(true)}
+            onClick={handleNewCustomer}
             className="bg-color  text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4"
           >
             New Customer
@@ -272,56 +298,57 @@ const CustomerList = () => {
 
             {/* table body add here  */}
             <tbody>
-              {
-                ViewTableData?.map((item, index) => (
-                  <tr key={index} className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600">
-                    <th
-                      scope="row"
-                      className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+              {ViewTableData?.map((item, index) => (
+                <tr
+                  key={index}
+                  className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
+                >
+                  <th
+                    scope="row"
+                    className="px-6 py-4 font-medium text-gray-900 whitespace-nowrap dark:text-white"
+                  >
+                    {item?.customerName}
+                  </th>
+                  <td className="px-6 py-4">{item?.uniqueId}</td>
+                  <td className="px-6 py-4">{item?.type}</td>
+                  <td className="px-6 py-4">{item?.condition}</td>
+                  <td className="px-6 py-4">{item?.pointRate}</td>
+                  <td className="px-6 py-4 text-right">
+                    <Link
+                      onClick={() => handleEdit(item?._id)}
+                      className="font-medium mr-2 text-color hover:underline"
                     >
-                      {item?.customerName}
-                    </th>
-                    <td className="px-6 py-4">{item?.uniqueId}</td>
-                    <td className="px-6 py-4">{item?.type}</td>
-                    <td className="px-6 py-4">{item?.condition}</td>
-                    <td className="px-6 py-4">{item?.pointRate}</td>
-                    <td className="px-6 py-4 text-right">
-                      <Link
-                        onClick={() => handleEdit(item?._id)}
-                        className="font-medium mr-2 text-color hover:underline"
-                      >
-                        Edit
-                      </Link>
-                      <Link
-                        onClick={() => handleDelete(item?._id)}
-                        className="font-medium text-color hover:underline"
-                      >
-                        Delete
-                      </Link>
-                    </td>
-                  </tr>
-                ))
-              }
-
+                      Edit
+                    </Link>
+                    <Link
+                      onClick={() => handleDelete(item?._id)}
+                      className="font-medium text-color hover:underline"
+                    >
+                      Delete
+                    </Link>
+                  </td>
+                </tr>
+              ))}
             </tbody>
           </table>
         </div>
       </div>
 
-
       {/* modla here  */}
       <div className="mx-auto flex w-72 items-center justify-center">
         <div
           onClick={() => setOpenModal(false)}
-          className={`fixed z-[100] flex items-center justify-center ${openModal ? "opacity-1 visible" : "invisible opacity-0"
-            } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
+          className={`fixed z-[100] flex items-center justify-center ${
+            openModal ? "opacity-1 visible" : "invisible opacity-0"
+          } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
         >
           <div
             onClick={(e_) => e_.stopPropagation()}
-            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${openModal
-              ? "opacity-1 translate-y-0 duration-300"
-              : "-translate-y-20 opacity-0 duration-150"
-              }`}
+            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${
+              openModal
+                ? "opacity-1 translate-y-0 duration-300"
+                : "-translate-y-20 opacity-0 duration-150"
+            }`}
           >
             <form className="px-5 pb-5 pt-3 lg:pb-10 lg:pt-5 lg:px-10">
               <svg
@@ -388,7 +415,7 @@ const CustomerList = () => {
                       className="w-full border border-color rounded px-4 py-2"
                     >
                       <option value="SMA">SMA</option>
-                      <option value="SA">SA </option>
+                      <option value="MA">MA </option>
                     </select>
                   </div>
                 </div>
@@ -431,7 +458,7 @@ const CustomerList = () => {
               <button
                 type="button"
                 onClick={handleSubmit}
-                className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg  dark:bg-gray-700 dark:hover:bg-gray-800"
+                className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Submit
               </button>
@@ -440,19 +467,20 @@ const CustomerList = () => {
         </div>
       </div>
 
-
       <div className="mx-auto flex w-72 items-center justify-center">
         <div
           onClick={() => setOpenEdit(false)}
-          className={`fixed z-[100] flex items-center justify-center ${openEdit ? "opacity-1 visible" : "invisible opacity-0"
-            } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
+          className={`fixed z-[100] flex items-center justify-center ${
+            openEdit ? "opacity-1 visible" : "invisible opacity-0"
+          } inset-0 h-full w-full bg-black/20 backdrop-blur-sm duration-100`}
         >
           <div
             onClick={(e_) => e_.stopPropagation()}
-            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${openEdit
-              ? "opacity-1 translate-y-0 duration-300"
-              : "-translate-y-20 opacity-0 duration-150"
-              }`}
+            className={`absolute w-full rounded-lg bg-white dark:bg-gray-900 drop-shadow-2xl sm:w-[500px] ${
+              openEdit
+                ? "opacity-1 translate-y-0 duration-300"
+                : "-translate-y-20 opacity-0 duration-150"
+            }`}
           >
             <form className="px-5 pb-5 pt-3 lg:pb-10 lg:pt-5 lg:px-10">
               <svg
@@ -519,7 +547,7 @@ const CustomerList = () => {
                       className="w-full border border-color rounded px-4 py-2"
                     >
                       <option value="SMA">SMA</option>
-                      <option value="SA">SA </option>
+                      <option value="MA">MA </option>
                     </select>
                   </div>
                 </div>
@@ -562,15 +590,14 @@ const CustomerList = () => {
               <button
                 type="button"
                 onClick={HandleEditedData}
-                className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg  dark:bg-gray-700 dark:hover:bg-gray-800"
+                className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
-                Submit
+                Edit
               </button>
             </form>
           </div>
         </div>
       </div>
-
 
       {/* pagination */}
       <div className="flex select-none justify-center items-center bg-white shadow-lg rounded-sm w-fit mx-auto">
@@ -612,10 +639,11 @@ const CustomerList = () => {
               onClick={() => {
                 setPageNumber(item);
               }}
-              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${pageNumber === item
-                ? "bg-color text-white"
-                : "bg-white hover:bg-gray-200"
-                }   font-semibold text-gray-700   py-[8px] `}
+              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${
+                pageNumber === item
+                  ? "bg-color text-white"
+                  : "bg-white hover:bg-gray-200"
+              }   font-semibold text-gray-700   py-[8px] `}
               key={item}
             >
               {item + 1}

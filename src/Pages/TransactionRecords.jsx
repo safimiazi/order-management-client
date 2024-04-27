@@ -8,7 +8,7 @@ const TransactionRecords = () => {
 
   // =========== paginstaion functionlities ===================
 
-  const page = Math.floor(transactionInfoLength / 50) || 0 ; // Adjust the page numbers the way you want
+  const page = Math.ceil(transactionInfoLength / 50) || 0 ; // Adjust the page numbers the way you want
   console.log(page,getingTranstionData);
   const updatePageNumber = (num) => {
     if ((num > (page - 1)) || (0 > num)) { return setPageNumber(0) }
@@ -19,7 +19,7 @@ const TransactionRecords = () => {
   // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
 
-    const url = new URL('http://localhost:5000/getTransationDAta');
+    const url = new URL('https://agent-server-mu.vercel.app/getTransationDAta');
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 
@@ -74,9 +74,9 @@ const TransactionRecords = () => {
                   <td className="px-4 py-2">{++index}</td>
                   <td className="px-4 py-2">{item?.paymentType}</td>
                   <td className="px-4 py-2">{item?.customerId}</td>
-                  <td className="px-4 py-2">{item?.paymentType}</td>
+                  <td className="px-4 py-2">{item?.transationType}</td>
                   <td className="px-4 py-2">{item?.amount}</td>
-                  <td className="px-4 py-2">{item?.points}</td>
+                  <td className="px-4 py-2">{item?.points.toFixed(2)}</td>
                   <td className="px-4 py-2">{item?.createdAt}</td>
                   <td className="px-4 py-2">{item?.trans}</td>
                   <td className="px-4 py-2">{item?.orderId}</td>
