@@ -77,7 +77,7 @@ const TransactionRecords = () => {
                   <td className="px-4 py-2">{item?.transationType}</td>
                   <td className="px-4 py-2">{item?.amount}</td>
                   <td className="px-4 py-2">{item?.points.toFixed(2)}</td>
-                  <td className="px-4 py-2">{item?.createdAt}</td>
+                  <td className="px-4 py-2">{new Date(item?.createdAt).toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}</td>
                   <td className="px-4 py-2">{item?.trans}</td>
                   <td className="px-4 py-2">{item?.orderId}</td>
                 </tr>
