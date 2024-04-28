@@ -69,7 +69,7 @@ const TransactionRecords = () => {
           <tbody>
             {/* view data transation information with table   */}
             {
-              getingTranstionData?.map((item, index) => (
+              getingTranstionData.reverse()?.map((item, index) => (
                 <tr className="bg-white border-b">
                   <td className="px-4 py-2">{++index}</td>
                   <td className="px-4 py-2">{item?.paymentType}</td>
