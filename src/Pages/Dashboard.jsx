@@ -289,43 +289,44 @@ const Dashboard = () => {
             Last Week
           </button>
           <button
-            onClick={() => handleConditionData("last-month")}
-            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
-          >
-            Last month
-          </button>
-          <button
             onClick={() => handleConditionData("this-month")}
             className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
           >
             This Month
           </button>
+          <button
+            onClick={() => handleConditionData("last-month")}
+            className="rounded-lg bg-color px-4   hover:bg-orange-600 py-2  text-white duration-300 active:scale-95 "
+          >
+            Last Month
+          </button>
+       
         </div>
       </div>
 
       <div className="bg-white rounded-lg shadow-md md:p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-100 rounded-lg">
+          <div className="bg-gray-50 rounded-lg">
             <div className="overflow-x-auto ">
-              <table className="w-full  text-left border mx-auto  my-4 ">
+              <table className="w-full  text-left border mx-auto  my-2 ">
                 <thead>
                   <tr className="bg-color text-white">
-                    <th className="py-3 px-6 text-left border-b">
+                    <th className="py-3 px-2 text-left border-b">
                       Total Agent Top Up
                     </th>
 
-                    <th className="py-3 px-6  border-b text-left">
+                    <th className="py-3 px-2  border-b text-left">
                       Payment Method
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className=" text-left transition duration-300">
-                    <td className="py-1 px-6 border-b">
+                    <td className="py-1 px-2 border-b">
                       BDT: ৳ <span> {allTransationData?.TotalDopositeAmount}</span>{" "}
                     </td>
 
-                    <td className="py-1 px-6 border-b text-left">
+                    <td className="py-1 px-2 border-b text-left">
                       bKash: ৳{" "}
                       <span>
                         {allTransationData?.totalDopositePaymentMethod.bkash}
@@ -333,7 +334,7 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">
+                    <td className="py-1 px-2 border-b">
                       Credits: ৳{" "}
                       <span>
                         {" "}
@@ -341,7 +342,7 @@ const Dashboard = () => {
                       </span>
                     </td>
 
-                    <td className="py-1 px-6 border-b text-left">
+                    <td className="py-1 px-2 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
                         {allTransationData?.totalDopositePaymentMethod?.rocket}
@@ -349,41 +350,41 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData?.dopositeUniqueCustomers}</span></td>
+                    <td className="py-1 px-2 border-b">Unique Agents: <span>{allTransationData?.dopositeUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span>  {allTransationData?.totalDopositePaymentMethod?.upay}</span></td>
+                    <td className="py-1 px-2 border-b text-left">Upay: ৳ <span>  {allTransationData?.totalDopositePaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData?.dopsiteTransactions}</span></td>
+                    <td className="py-1 px-2 border-b">Total Count: <span>{allTransationData?.dopsiteTransactions}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalDopositePaymentMethod?.nagod}</span></td>
+                    <td className="py-1 px-2 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalDopositePaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Last Deposit: <span>{allTransationData?.dopsiteTransactionTime}</span></td>
+                    <td className="py-1 px-2 border-b">Last Deposit: <span>{allTransationData?.dopsiteTransactionTime}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left"></td>
+                    <td className="py-1 px-2 border-b text-left"></td>
                   </tr>
                 </tbody>
               </table>
               <table className="w-full  text-left border mx-auto  my-6">
                 <thead>
                   <tr className="bg-color text-white">
-                    <th className="py-3 px-6 text-left border-b">
+                    <th className="py-3 px-2 text-left border-b">
                       Total Withdrawal
                     </th>
 
-                    <th className="py-3 px-6  border-b text-left">
+                    <th className="py-3 px-2  border-b text-left">
                       Payment Method
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className=" text-left transition duration-300">
-                    <td className="py-1 px-6 border-b">
+                    <td className="py-1 px-2 border-b">
                       BDT: ৳ <span> {allTransationData?.totalWithdrawAmount}</span>{" "}
                     </td>
 
-                    <td className="py-1 px-6 border-b text-left">
+                    <td className="py-1 px-2 border-b text-left">
                       bKash: ৳{" "}
                       <span>
                         {allTransationData?.totalWithDrawPaymentMethod?.bkash}
@@ -391,7 +392,7 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">
+                    <td className="py-1 px-2 border-b">
                       Credits: ৳{" "}
                       <span>
                         {" "}
@@ -399,7 +400,7 @@ const Dashboard = () => {
                       </span>
                     </td>
 
-                    <td className="py-1 px-6 border-b text-left">
+                    <td className="py-1 px-2 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
                       {allTransationData?.totalWithDrawPaymentMethod?.rocket}
@@ -408,19 +409,19 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData?.withdrawUniqueCustomers}</span></td>
+                    <td className="py-1 px-2 border-b">Unique Agents: <span>{allTransationData?.withdrawUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span> {allTransationData?.totalWithDrawPaymentMethod?.upay}</span></td>
+                    <td className="py-1 px-2 border-b text-left">Upay: ৳ <span> {allTransationData?.totalWithDrawPaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData?.withdrawTransactions}</span></td>
+                    <td className="py-1 px-2 border-b">Total Count: <span>{allTransationData?.withdrawTransactions}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalWithDrawPaymentMethod?.nagod}</span></td>
+                    <td className="py-1 px-2 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalWithDrawPaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Last Withdraw: <span>{allTransationData?.withdrawTransactionTime}</span></td>
+                    <td className="py-1 px-2 border-b">Last Withdraw: <span>{allTransationData?.withdrawTransactionTime}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left"></td>
+                    <td className="py-1 px-2 border-b text-left"></td>
                   </tr>
                 
                 </tbody>
@@ -430,11 +431,11 @@ const Dashboard = () => {
               <table className="w-full  text-left border mx-auto  my-6">
                 <thead>
                   <tr className="bg-color text-white">
-                    <th className="py-3 px-6 text-left border-b">
+                    <th className="py-3 px-2 text-left border-b">
                       Need Banlance
                     </th>
 
-                    <th className="py-3 px-6  border-b text-left">
+                    <th className="py-3 px-2  border-b text-left">
                       Need Points
                     </th>
                   </tr>
@@ -442,9 +443,9 @@ const Dashboard = () => {
                 <tbody>
                
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Balance: <span>{allTransationData?.remainAmounts}</span></td>
+                    <td className="py-1 px-2 border-b">Balance: <span>{allTransationData?.remainAmounts}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Points: ৳ <span>{allTransationData?.remainPoints?.toFixed(2)}</span></td>
+                    <td className="py-1 px-2 border-b text-left">Points: ৳ <span>{allTransationData?.remainPoints?.toFixed(2)}</span></td>
                   </tr>
                
                 

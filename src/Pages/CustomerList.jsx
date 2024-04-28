@@ -47,7 +47,7 @@ const CustomerList = () => {
         const data = await response.json();
         // Use the data here
         console.log(data);
-        setViewTableData(data?.clientDataList?.finalliyValue);
+        setViewTableData(data?.clientDataList?.finalliyValue.reverse());
         setDataListLenght(data?.clientDataList?.TotalDataLenght);
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -101,7 +101,6 @@ const handleNewCustomer = () => {
         if (response.ok) {
           const responseData = await response.json();
           console.log(responseData);
-          toast.success("successfully added client");
           setViewTableData(prevData => [...prevData, allData]);
           setDataListLenght(prevLength => prevLength + 1);
         } else {
@@ -262,7 +261,7 @@ const handleNewCustomer = () => {
         <div>
           <button
             onClick={handleNewCustomer}
-            className="bg-color  text-white font-semibold py-2 px-4 rounded-md  focus:outline-none mr-4"
+            className="bg-color  text-white max-sm:w-36 py-2 px-4 rounded-md  focus:outline-none mr-4"
           >
             New Customer
           </button>

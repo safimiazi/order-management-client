@@ -1,46 +1,53 @@
 import React, { useEffect, useState } from "react";
 
 const TransactionRecords = () => {
-  const [pageNumber, setPageNumber] = useState(0) // page number 
-  const [getingTranstionData, setTransationData] = useState([]) // geting all transation data form the server list 
-  const [transactionInfoLength, setTransactionInfoLength] = useState(0) // geting all the transationinfo lenght 
-  const [search, setSearch] = useState('')
+  const [pageNumber, setPageNumber] = useState(0); // page number
+  const [getingTranstionData, setTransationData] = useState([]); // geting all transation data form the server list
+  const [transactionInfoLength, setTransactionInfoLength] = useState(0); // geting all the transationinfo lenght
+  const [search, setSearch] = useState("");
 
   // =========== paginstaion functionlities ===================
 
-  const page = Math.ceil(transactionInfoLength / 50) || 0 ; // Adjust the page numbers the way you want
-  console.log(page,getingTranstionData);
+  const page = Math.ceil(transactionInfoLength / 50) || 0; // Adjust the page numbers the way you want
+  console.log(page, getingTranstionData);
   const updatePageNumber = (num) => {
-    if ((num > (page - 1)) || (0 > num)) { return setPageNumber(0) }
-    setPageNumber(num)
-  }
+    if (num > page - 1 || 0 > num) {
+      return setPageNumber(0);
+    }
+    setPageNumber(num);
+  };
 
   console.log(search, pageNumber);
   // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
-
-    const url = new URL('http://localhost:5000/getTransationDAta');
+    const url = new URL("http://localhost:5000/getTransationDAta");
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 
     const getTransactionInfo = async () => {
-      const transactionData = await fetch(url)
-      const getingTransation = await transactionData.json()
+      const transactionData = await fetch(url);
+      const getingTransation = await transactionData.json();
       console.log(getingTransation);
-      setTransactionInfoLength(getingTransation?.getingTransationResult?.TotalDataLenght)
-      setTransationData(getingTransation?.getingTransationResult?.finalliyValue)
-    }
-    getTransactionInfo()
-  }, [search,pageNumber, ])
+      setTransactionInfoLength(
+        getingTransation?.getingTransationResult?.TotalDataLenght
+      );
+      setTransationData(
+        getingTransation?.getingTransationResult?.finalliyValue.reverse()
+      );
+    };
+    getTransactionInfo();
+  }, [search, pageNumber]);
 
   return (
     <div className="flex flex-col gap-5">
       <div className="flex items-center justify-between mt-5">
         <div>
-          <h3 className="text-2xl font-bold">Transaction Records</h3>
+          <h3 className=" text-base max-sm:w-52  font-bold">
+            Transaction Records
+          </h3>
         </div>
         <div>
-        <input
+          <input
             className="w-full px-4 py-2 rounded-md border  focus:outline-none border-color focus:border-color"
             type="text"
             name=""
@@ -68,21 +75,26 @@ const TransactionRecords = () => {
           </thead>
           <tbody>
             {/* view data transation information with table   */}
-            {
-              getingTranstionData.reverse()?.map((item, index) => (
-                <tr className="bg-white border-b">
-                  <td className="px-4 py-2">{++index}</td>
-                  <td className="px-4 py-2">{item?.paymentType}</td>
-                  <td className="px-4 py-2">{item?.customerId}</td>
-                  <td className="px-4 py-2">{item?.transationType}</td>
-                  <td className="px-4 py-2">{item?.amount}</td>
-                  <td className="px-4 py-2">{item?.points.toFixed(2)}</td>
-                  <td className="px-4 py-2">{new Date(item?.createdAt).toLocaleString('en-US', { timeZone: 'Asia/Dhaka' })}</td>
-                  <td className="px-4 py-2">{item?.trans}</td>
-                  <td className="px-4 py-2">{item?.orderId}</td>
-                </tr>
-              ))
-            }
+            {getingTranstionData.reverse()?.map((item, index) => (
+              <tr className="bg-white border-b">
+                <td className="px-4 py-2">{++index}</td>
+                <td className="px-4 py-2">{item?.paymentType}</td>
+                <td className="px-4 py-2">{item?.customerId}</td>
+                <td className="px-4 py-2">{item?.transationType}</td>
+                <td className="px-4 py-2">{item?.amount}</td>
+                <td className="px-4 py-2">{item?.points.toFixed(2)}</td>
+                <td className="px-4 py-2">
+                  {new Date(item?.createdAt).toLocaleString("en-US", {
+                    timeZone: "Asia/Dhaka",
+                  })}
+                </td>
+                <td className="px-4 py-2 flex flex-col">
+                  <span> {item.trans ? item?.trans : item?.transectionNumber }</span>
+                  <span className={item.transationType ? 'text-sm' : 'hidden'}>{item?.number}</span>
+                </td>
+                <td className="px-4 py-2">{item?.orderId}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       </div>
@@ -125,10 +137,11 @@ const TransactionRecords = () => {
               onClick={() => {
                 setPageNumber(item);
               }}
-              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${pageNumber === item
+              className={`cursor-pointer  text-sm  transition-all border-r border-l  duration-200 px-4 ${
+                pageNumber === item
                   ? "bg-color text-white"
                   : "bg-white hover:bg-gray-200"
-                }   font-semibold text-gray-700   py-[8px] `}
+              }   font-semibold text-gray-700   py-[8px] `}
               key={item}
             >
               {item + 1}
