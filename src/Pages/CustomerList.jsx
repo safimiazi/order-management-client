@@ -36,7 +36,7 @@ const CustomerList = () => {
   // search value and pagiation value add within array
 
   useEffect(() => {
-    const url = new URL("http://localhost:5000/getClientData");
+    const url = new URL("https://agent-server-navy.vercel.app/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
@@ -88,7 +88,7 @@ const handleNewCustomer = () => {
     const registerUserInsertData = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/clientListItem",
+          "https://agent-server-navy.vercel.app/clientListItem",
           {
             method: "POST",
             headers: {
@@ -155,7 +155,7 @@ const handleNewCustomer = () => {
     };
   
     try {
-      const response = await fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
+      const response = await fetch(`https://agent-server-navy.vercel.app/eiditeClientData/${eidteId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -212,7 +212,7 @@ const handleNewCustomer = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `http://localhost:5000/deleteClientData/${id}`,
+            `https://agent-server-navy.vercel.app/deleteClientData/${id}`,
             {
               method: "DELETE",
               headers: {
