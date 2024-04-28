@@ -7,7 +7,7 @@ const Dashboard = () => {
   const [orderId, setOrderId] = useState("");
   const [points, setPoints] = useState("");
   const [showOrderDetails, setShowOrderDetails] = useState(false);
-  const [transactionType, setTransactionType] = useState("Deposit");
+  const [transactionType, setTransactionType] = useState();
   const [showTransactionNumber, setShowTransactionNumber] = useState(false);
   const [customerId, setCUstomerId] = useState();
   const [transectionNumber, setShowTransactionvalue] = useState();
@@ -22,19 +22,7 @@ const Dashboard = () => {
   const [allDataList, setAllDataList] = useState({}); // insertARrray inside the data form the filed list
   const [userDataList, setUserDataList] = useState([]); // registerUser data list get from the server
   const [search2, setSearch2] = useState(); // default value for rleftaring and search
-  const [allTransationData, setAllTransationData] = useState([
-    { message: "geting a data successsfully from the database " },
-    { TotalAmount: 0 },
-    { TotalPoints: 0 },
-    { TotalDeposit: 0 },
-    { TotalWithdrawalAmount: 0 },
-    { TotalWithdrawalCredit: 0 },
-    { TotalPaymentMethodbkash: 0 },
-    { TotalPaymentMethodRoket: 0 },
-    { TotalPaymentMethodUpay: 0 },
-    { TotalPaymentMethodNogod: 0 },
-    { TotalPaymentMethodBank: 0 },
-  ]); // store data all the transation list data
+  const [allTransationData, setAllTransationData] = useState(); // store data all the transation list data
   // Regular expression to match the last number in the string
 
   // console.log(allTransationData[1].TotalAmount ,'all the stor state list check');
@@ -49,7 +37,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getingAllregisterUser = async () => {
-      const userData = await fetch("https://agent-server-mu.vercel.app/getingRegisterUser");
+      const userData = await fetch("http://localhost:5000/getingRegisterUser");
       const userDataString = await userData.json();
       console.log(userDataString);
       setUserDataList(userDataString?.finalResulst);
@@ -93,7 +81,7 @@ const Dashboard = () => {
 
  useEffect(()=>{
   setShowTransactionNumber(true);
-  setTransactionType("Deposit")
+  // setTransactionType("Deposit")
  },[customerId])
 
   // call api here for insert all the transation
@@ -102,7 +90,7 @@ const Dashboard = () => {
     const insertDataToDataBase = async () => {
       try {
         const response = await fetch(
-          "https://agent-server-mu.vercel.app/insertTransaction",
+          "http://localhost:5000/insertTransaction",
           {
             method: "POST",
             headers: {
@@ -125,7 +113,6 @@ const Dashboard = () => {
         } else {
           // Failed to add data
           console.error("Failed to add data:", response.statusText);
-          toast.error("Failed to add data");
         }
       } catch (error) {
         console.error("Error adding data:", error);
@@ -191,7 +178,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `https://agent-server-mu.vercel.app/getingTotalData?search=${search2}`,
+          `http://localhost:5000/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
@@ -227,7 +214,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `https://agent-server-mu.vercel.app/getingTotalData?search=${search2}`,
+          `http://localhost:5000/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
@@ -260,10 +247,10 @@ const Dashboard = () => {
     handleConditionData(e.target.value);
   };
 
+  console.log("allTransationData", allTransationData)
   
-const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationData[5]?.TotalWithdrawalCredit?.toFixed(2)
   return (
-    <div className="container mx-auto px-4 py-8">
+    <div className="container mx-auto  py-8">
       <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
         <div className="flex-1 flex">
           <input
@@ -272,7 +259,7 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
             value={searchValue}
             onChange={handleSearch}
             placeholder="User ID"
-            className="w-full py-2 px-4 rounded-l-md focus:outline-none"
+            className="w-full min-w-40 py-2 px-4 rounded-l-md focus:outline-none"
           />
           <button
             id="searchButton"
@@ -284,7 +271,7 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
         <div className="flex gap-2">
           <button
             onClick={() => handleConditionData("today")}
-            className="rounded-lg bg-color px-4  hover:bg-orange-600  py-2  text-white duration-300 active:scale-95"
+            className="rounded-lg bg-color px-4   hover:bg-orange-600  py-2  text-white duration-300 active:scale-95"
           >
             Today
           </button>
@@ -316,11 +303,11 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md p-6">
+      <div className="bg-white rounded-lg shadow-md md:p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-200 rounded-lg p-2">
+          <div className="bg-gray-100 rounded-lg">
             <div className="overflow-x-auto ">
-              <table className="w-full  text-left border mx-auto  my-6">
+              <table className="w-full  text-left border mx-auto  my-4 ">
                 <thead>
                   <tr className="bg-color text-white">
                     <th className="py-3 px-6 text-left border-b">
@@ -335,13 +322,13 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                 <tbody>
                   <tr className=" text-left transition duration-300">
                     <td className="py-1 px-6 border-b">
-                      BDT: ৳ <span> {allTransationData[1].TotalAmount}</span>{" "}
+                      BDT: ৳ <span> {allTransationData?.TotalDopositeAmount}</span>{" "}
                     </td>
 
                     <td className="py-1 px-6 border-b text-left">
                       bKash: ৳{" "}
                       <span>
-                        {allTransationData[6]?.TotalPaymentMethodbkash}
+                        {allTransationData?.totalDopositePaymentMethod.bkash}
                       </span>
                     </td>
                   </tr>
@@ -350,29 +337,29 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                       Credits: ৳{" "}
                       <span>
                         {" "}
-                        {allTransationData[2]?.TotalPoints?.toFixed(2)}
+                        {allTransationData?.totalDopositePoints?.toFixed(2)}
                       </span>
                     </td>
 
                     <td className="py-1 px-6 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
-                        {allTransationData[7]?.TotalPaymentMethodRoket}
+                        {allTransationData?.totalDopositePaymentMethod?.rocket}
                       </span>
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData[14]?.uniqueCustomers}</span></td>
+                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData?.dopositeUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span>{allTransationData[8]?.TotalPaymentMethodUpay}</span></td>
+                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span>  {allTransationData?.totalDopositePaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData[11]?.TotalTransationToday}</span></td>
+                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData?.dopsiteTransactions}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData[9]?.TotalPaymentMethodNogod}</span></td>
+                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalDopositePaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Last Deposit: <span>{allTransationData[12]?.TodayLastTimeTransation}</span></td>
+                    <td className="py-1 px-6 border-b">Last Deposit: <span>{allTransationData?.dopsiteTransactionTime}</span></td>
 
                     <td className="py-1 px-6 border-b text-left"></td>
                   </tr>
@@ -393,13 +380,13 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                 <tbody>
                   <tr className=" text-left transition duration-300">
                     <td className="py-1 px-6 border-b">
-                      BDT: ৳ <span> {allTransationData[4]?.TotalWithdrawalAmount}</span>{" "}
+                      BDT: ৳ <span> {allTransationData?.totalWithdrawAmount}</span>{" "}
                     </td>
 
                     <td className="py-1 px-6 border-b text-left">
                       bKash: ৳{" "}
                       <span>
-                        {allTransationData[6]?.TotalPaymentMethodbkash}
+                        {allTransationData?.totalWithDrawPaymentMethod?.bkash}
                       </span>
                     </td>
                   </tr>
@@ -408,42 +395,59 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                       Credits: ৳{" "}
                       <span>
                         {" "}
-                        {allTransationData[5]?.TotalWithdrawalCredit?.toFixed(2)}
+                        {allTransationData?.totalWithdrawCredit}
                       </span>
                     </td>
 
                     <td className="py-1 px-6 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
-                      {allTransationData[7]?.TotalPaymentMethodRoket}
+                      {allTransationData?.totalWithDrawPaymentMethod?.rocket}
+
                       </span>
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData[14]?.uniqueCustomers}</span></td>
+                    <td className="py-1 px-6 border-b">Unique Agents: <span>{allTransationData?.withdrawUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span>{allTransationData[8]?.TotalPaymentMethodUpay}</span></td>
+                    <td className="py-1 px-6 border-b text-left">Upay: ৳ <span> {allTransationData?.totalWithDrawPaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData[11]?.TotalTransationToday}</span></td>
+                    <td className="py-1 px-6 border-b">Total Count: <span>{allTransationData?.withdrawTransactions}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData[9]?.TotalPaymentMethodNogod}</span></td>
+                    <td className="py-1 px-6 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalWithDrawPaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b">Last Deposit: <span>{allTransationData[12]?.TodayLastTimeTransation}</span></td>
+                    <td className="py-1 px-6 border-b">Last Withdraw: <span>{allTransationData?.withdrawTransactionTime}</span></td>
 
                     <td className="py-1 px-6 border-b text-left"></td>
                   </tr>
-                  <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b text-color">Need Balence: <span>{allTransationData[13]?.NeedBalenceWD}</span></td>
+                
+                </tbody>
+              </table>
 
-                    <td className="py-1 px-6 border-b text-left"></td>
-                  </tr>
-                  <tr className=" transition duration-300">
-                    <td className="py-1 px-6 border-b text-color">Need Point: <span>{needPoint.toFixed(2)}</span></td>
 
-                    <td className="py-1 px-6 border-b text-left"></td>
+              <table className="w-full  text-left border mx-auto  my-6">
+                <thead>
+                  <tr className="bg-color text-white">
+                    <th className="py-3 px-6 text-left border-b">
+                      Need Banlance
+                    </th>
+
+                    <th className="py-3 px-6  border-b text-left">
+                      Need Points
+                    </th>
                   </tr>
+                </thead>
+                <tbody>
+               
+                  <tr className=" transition duration-300">
+                    <td className="py-1 px-6 border-b">Balance: <span>{allTransationData?.remainAmounts}</span></td>
+
+                    <td className="py-1 px-6 border-b text-left">Points: ৳ <span>{allTransationData?.remainPoints?.toFixed(2)}</span></td>
+                  </tr>
+               
+                
                 </tbody>
               </table>
             </div>
@@ -451,8 +455,8 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
 
           <div>
             {!showOrderDetails && (
-              <div className="bg-white rounded-lg shadow-md p-6">
-                <form className="max-w-md mx-auto bg-white rounded p-6">
+              <div className="bg-white rounded-lg  p-2">
+                <form className="max-w-md mx-auto bg-white rounded md:p-6">
                   <h2 className="text-2xl font-semibold mb-4">
                     Order Management
                   </h2>
@@ -470,6 +474,7 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                       onChange={handleCustomerIdChange}
                       className="w-full border border-color focus:border-color active:border-color rounded px-3 py-2"
                     >
+                      <option value="">select customer id</option>
                       {userDataList?.map((item, index) => (
                         <option key={index} value={item?.uniqueId}>
                           {item?.uniqueId}
@@ -493,11 +498,16 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                     >
                       {transType === "Withdraw" ? (
                         <>
+                          <option value="">select transaction type</option>
                           <option value="Deposit">Deposit</option>
                           <option value="Withdraw">Withdraw</option>
                         </>
                       ) : (
-                        <option value="Deposit">Deposit</option>
+                        <>
+                           <option value="">select transaction type</option>
+                            <option value="Deposit">Deposit</option>
+
+                        </>
                       )}
                     </select>
                   </div>
@@ -551,6 +561,7 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
                       onChange={(e) => setPaymentType(e.target.value)}
                       className="w-full border border-color rounded px-3 py-2"
                     >
+                      <option value="">select  Payment Type</option>
                       <option value="bkash">Bkash</option>
                       <option value="nagod">Nagod</option>
                       <option value="rocket">Rocket</option>
@@ -569,7 +580,7 @@ const needPoint = allTransationData[2]?.TotalPoints?.toFixed(2) - allTransationD
               </div>
             )}
             {showOrderDetails && (
-              <div className="bg-white rounded-lg shadow-md p-6 mt-4">
+              <div className="bg-white rounded-lg p-2 mt-4">
                 <h2 className="text-2xl font-semibold mb-4">Order Details</h2>
                 <div className="mb-4">
                   <label

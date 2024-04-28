@@ -19,7 +19,7 @@ const TransactionRecords = () => {
   // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
 
-    const url = new URL('https://agent-server-mu.vercel.app/getTransationDAta');
+    const url = new URL('http://localhost:5000/getTransationDAta');
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 
@@ -51,8 +51,8 @@ const TransactionRecords = () => {
           />
         </div>
       </div>
-      <div>
-        <table className="w-full border-collapse overflow-hidden bg-white shadow-md rounded-lg">
+      <div className="overflow-x-auto">
+        <table className="w-full border-collapse  bg-white shadow-md rounded-lg">
           <thead className="bg-gray-100">
             <tr>
               <th className="px-4 py-2">#</th>

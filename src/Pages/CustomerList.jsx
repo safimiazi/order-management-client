@@ -29,12 +29,14 @@ const CustomerList = () => {
     setPageNumber(num);
   };
 
+
+  console.log("edited Id", eidteId)
   /// ===================================== search functionality added the  =====================================
 
   // search value and pagiation value add within array
 
   useEffect(() => {
-    const url = new URL("https://agent-server-mu.vercel.app/getClientData");
+    const url = new URL("http://localhost:5000/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
@@ -55,7 +57,6 @@ const CustomerList = () => {
     fetchData();
   }, [search, pageNumber]);
 
-  console.log(search);
 
   // data insert section ================================  insert data to database =======================================
 
@@ -86,8 +87,8 @@ const handleNewCustomer = () => {
   useEffect(() => {
     const registerUserInsertData = async () => {
       try {
-        const userDataJson = await fetch(
-          "https://agent-server-mu.vercel.app/clientListItem",
+        const response = await fetch(
+          "http://localhost:5000/clientListItem",
           {
             method: "POST",
             headers: {
@@ -96,28 +97,24 @@ const handleNewCustomer = () => {
             body: JSON.stringify(allData),
           }
         );
-    
-        const userDataListString = await userDataJson.json();
-        if (userDataListString) {
-          console.log(userDataListString, "user list check api");
-          if (
-            userDataListString?.result?.message === "successfully insert data "
-          ) {
-            // Toast success message
-            toast.success("successfully added client");
-            // Update the state with the newly added data
-            setViewTableData(prevData => [...prevData, allData]);
-            // Optional: You can also increment the dataListLength state if needed
-            setDataListLength(prevLength => prevLength + 1);
-          }
+  
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(responseData);
+          toast.success("successfully added client");
+          setViewTableData(prevData => [...prevData, allData]);
+          setDataListLenght(prevLength => prevLength + 1);
+        } else {
+          throw new Error("Failed to register user. Server responded with: " + response.status);
         }
       } catch (error) {
         console.error("Error while registering user:", error);
       }
     };
-    
+  
     registerUserInsertData();
   }, [allData]);
+  
 
   // write fuction for genarete unique id  for identifying users
   // useEffect(() => {
@@ -149,8 +146,7 @@ const handleNewCustomer = () => {
   // ============= user edite data find =========================
 
   // ============== user edite here =====================================
-
-  const HandleEditedData = (id) => {
+  const HandleEditedData = async (eidteId) => {
     const data = {
       customerName: customer,
       uniqueId: uniqueId,
@@ -158,34 +154,50 @@ const handleNewCustomer = () => {
       condition: condition,
       pointRate: pointRate,
     };
-
-    console.log( "check value",data, eidteId);
-
-    fetch(`https://agent-server-mu.vercel.app/eiditeClientData/${eidteId}`, {
-      method: "PUT",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
-    })
-      .then((res) => {
-        if (res.ok) {
-          console.log("data is successfully sent");
-          toast.success("Successfully New User Created!");
-
-          setViewTableData(prevData => [...prevData, data]);
-
-        } else {
-          console.error("Failed to send data");
-          toast.error("Failed to create Customer");
-        }
-      })
-      .catch((error) => {
-        console.error("Network error", error);
-        toast.error("Network error");
+  
+    try {
+      const response = await fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
       });
-  };
+  
+      if (response.ok) {
+        console.log("Data is successfully edited");
+        toast.success("Successfully updated user!");
+  
+        // Update the table data after successful edit
+        const updatedData = ViewTableData.map(item => {
+          if (item._id === eidteId) {
+            // Update the fields of the edited item
+            console.log("all item", item)
 
+            return {
+              ...item,
+              customerName: customer,
+              uniqueId: uniqueId,
+              type: type,
+              condition: condition,
+              pointRate: pointRate,
+            };
+          }
+          return item;
+        });
+  
+        setViewTableData(updatedData);
+      } else {
+        console.error("Failed to update data");
+        toast.error("Failed to update user");
+      }
+    } catch (error) {
+      console.error("Network error", error);
+      toast.error("Network error");
+    }
+  };
+  
+  
   // ============== user deleted api call here  ====================================
 
   const handleDelete = async (id) => {
@@ -201,7 +213,7 @@ const handleNewCustomer = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `https://agent-server-mu.vercel.app/deleteClientData/${id}`,
+            `http://localhost:5000/deleteClientData/${id}`,
             {
               method: "DELETE",
               headers: {
@@ -414,8 +426,10 @@ const handleNewCustomer = () => {
                       onChange={(e) => setType(e.target.value)}
                       className="w-full border border-color rounded px-4 py-2"
                     >
+                      <option value="" selected>Please Select Type</option>
                       <option value="SMA">SMA</option>
                       <option value="MA">MA </option>
+                      
                     </select>
                   </div>
                 </div>
@@ -431,6 +445,7 @@ const handleNewCustomer = () => {
                       onChange={(e) => setCondition(e.target.value)}
                       className="w-full border border-color rounded px-4 py-2"
                     >
+                      <option value="" selected>Please Select Condition</option>
                       <option value="Withdraw">Withdraw</option>
                       <option value="Non-Withdraw">Non-Withdraw</option>
                       {/* Add more customer options as needed */}
@@ -546,6 +561,7 @@ const handleNewCustomer = () => {
                       onChange={(e) => setType(e.target.value)}
                       className="w-full border border-color rounded px-4 py-2"
                     >
+                      <option value="">select type</option>
                       <option value="SMA">SMA</option>
                       <option value="MA">MA </option>
                     </select>
@@ -563,6 +579,7 @@ const handleNewCustomer = () => {
                       onChange={(e) => setCondition(e.target.value)}
                       className="w-full border border-color rounded px-4 py-2"
                     >
+                      <option value="">select condition</option>
                       <option value="Withdraw">Withdraw</option>
                       <option value="Non-Withdraw">Non-Withdraw</option>
                       {/* Add more customer options as needed */}
@@ -589,7 +606,7 @@ const handleNewCustomer = () => {
               {/* button type will be submit for handling form submission*/}
               <button
                 type="button"
-                onClick={HandleEditedData}
+                onClick={()=>HandleEditedData(eidteId)}
                 className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Edit
