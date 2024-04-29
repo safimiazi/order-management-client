@@ -8,42 +8,47 @@ const CustomerList = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [eidteId, setSingleIdModel] = useState();
   const [pageNumber, setPageNumber] = useState(0);
-  const [customer, setCustomer] = useState("");
+  const [customer, setCustomer] = useState();
   const [uniqueId, setUniqueId] = useState("");
-  const [type, setType] = useState("");
-  const [condition, setCondition] = useState("");
-  const [pointRate, setPointRate] = useState("");
-  const [search, setSearch] = useState("");
-  const [allData, setAllData] = useState({}); // all the data added here
-  const [viewTableData, setViewTableData] = useState([]); // view the data to table list get from server
-  const [dataListLength, setDataListLength] = useState(0); // total data length here
+  const [type, setType] = useState();
+  const [condition, setCondition] = useState();
+  const [pointRate, setPointRate] = useState();
+  const [search, setSearch] = useState();
+  const [allData, setAlldata] = useState({}); // all the data addd here
+  const [ViewTableData, setViewTableData] = useState([]); // viwe the data to table list get form server
+  const [dataListLenght, setDataListLenght] = useState(0); // total data lenght here
 
   console.log(customer, uniqueId, type, condition, pointRate);
-  const pages = Math.ceil(dataListLength / 50);
+  const pages = Math.ceil(dataListLenght / 50);
+  const page = pages; // Adjust the page numbers the way you want
   console.log(pages);
-
   const updatePageNumber = (num) => {
-    if (num > pages - 1 || num < 0) {
-      setPageNumber(0);
-    } else {
-      setPageNumber(num);
+    if (num > page - 1 || 0 > num) {
+      return setPageNumber(0);
     }
+    setPageNumber(num);
   };
 
-  /// ===================================== search functionality added =====================================
+
+  console.log("edited Id", eidteId)
+  /// ===================================== search functionality added the  =====================================
+
+  // search value and pagiation value add within array
 
   useEffect(() => {
-    const url = new URL("https://agent-server-steel.vercel.app/getClientData");
+    const url = new URL("http://localhost:5000/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
-    // getting data search and pagination
+    // geting data search and pagination
     const fetchData = async () => {
       try {
         const response = await fetch(url);
         const data = await response.json();
-        setViewTableData(data?.clientDataList?.finalliyValue);
-        setDataListLength(data?.clientDataList?.TotalDataLenght);
+        // Use the data here
+        console.log(data);
+        setViewTableData(data?.clientDataList?.finalliyValue.reverse());
+        setDataListLenght(data?.clientDataList?.TotalDataLenght);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -52,58 +57,93 @@ const CustomerList = () => {
     fetchData();
   }, [search, pageNumber]);
 
-  // Insert data to database
-  const handleSubmit = async () => {
-    const data = {
-      uniqueId: uniqueId,
-      customerName: customer,
-      type: type,
-      condition: condition,
-      pointRate: pointRate,
-    };
-    try {
-      const response = await fetch("https://agent-server-steel.vercel.app/clientListItem", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(data),
-      });
-      const result = await response.json();
-      if (result?.result?.message === "successfully insert data ") {
-        toast.success("successfully added client");
-        setAllData(data); // Set the data for dependency
-        setViewTableData((prevData) => [...prevData, data]);
-        setDataListLength((prevLength) => prevLength + 1);
-      }
-    } catch (error) {
-      console.error("Error while registering user:", error);
-    }
-  };
 
-  // Open modal for new customer
-  const handleNewCustomer = () => {
-    setCustomer("");
-    setUniqueId("");
-    setType("");
-    setCondition("");
-    setPointRate("");
-    setOpenModal(true);
-  };
+  // data insert section ================================  insert data to database =======================================
+
+
+
+//new customer open modal
+const handleNewCustomer = () => {
+  setCustomer("");
+  setUniqueId("");
+  setType(""); // Set the default value for the selector
+  setCondition(""); // Set the default value for the selector
+  setPointRate("");
+  setOpenModal(true)
+}
+
+
+
+    const registerUserInsertData = async () => {
+      const data = {
+        uniqueId: uniqueId,
+        customerName: customer,
+        type: type,
+        condition: condition,
+        pointRate: pointRate,
+      };
+      // setAlldata(data);
+      try {
+        const response = await fetch(
+          "http://localhost:5000/clientListItem",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify(data),
+          }
+        );
+  
+        if (response.ok) {
+          const responseData = await response.json();
+          console.log(responseData);
+          setViewTableData(prevData => [...prevData, data].reverse());
+          setDataListLenght(prevLength => prevLength + 1);
+          toast.success("Successfully added user!");
+
+        } else {
+          throw new Error("Failed to register user. Server responded with: " + response.status);
+        }
+      } catch (error) {
+        console.error("Error while registering user:", error);
+      }
+    };
+  
+
+  
+
+  // write fuction for genarete unique id  for identifying users
+  // useEffect(() => {
+  //   const generateUniqueId = () => {
+  //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  //     let uniqueId = '';
+  //     for (let i = 0; i < 8; i++) {
+  //       const randomIndex = Math.floor(Math.random() * characters.length);
+  //       uniqueId += characters[randomIndex];
+  //     }
+  //     setUniqueId(uniqueId)
+  //   };
+
+  //   generateUniqueId();
+  // }, [])
 
   const handleEdit = (id) => {
     setSingleIdModel(id);
     setOpenEdit(true);
 
-    const singleUserEdit = viewTableData?.find((item) => item._id === id);
+    const singleUserEdit = ViewTableData?.find((item) => item._id === id);
     setCustomer(singleUserEdit?.customerName);
     setUniqueId(singleUserEdit?.uniqueId);
-    setType(singleUserEdit?.type);
-    setCondition(singleUserEdit?.condition);
+    setType(singleUserEdit?.type); // Set the default value for the selector
+    setCondition(singleUserEdit?.condition); // Set the default value for the selector
     setPointRate(singleUserEdit?.pointRate);
   };
 
-  const handleEditedData = async (id) => {
+  // ============= user edite data find =========================
+
+  // ============== user edite here =====================================
+  const HandleEditedData = async (eidteId) => {
     const data = {
       customerName: customer,
       uniqueId: uniqueId,
@@ -111,31 +151,50 @@ const CustomerList = () => {
       condition: condition,
       pointRate: pointRate,
     };
-
-    console.log("check value", data, eidteId);
-
+  
     try {
-      const response = await fetch(`https://agent-server-steel.vercel.app/eiditeClientData/${eidteId}`, {
+      const response = await fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(data),
       });
+  
       if (response.ok) {
-        console.log("data is successfully sent");
-        toast.success("Successfully New User Created!");
-        setViewTableData((prevData) => [...prevData, data]);
+        console.log("Data is successfully edited");
+        toast.success("Successfully updated user!");
+  
+        // Update the table data after successful edit
+        const updatedData = ViewTableData.map(item => {
+          if (item._id === eidteId) {
+            // Update the fields of the edited item
+            console.log("all item", item)
+
+            return {
+              ...item,
+              customerName: customer,
+              uniqueId: uniqueId,
+              type: type,
+              condition: condition,
+              pointRate: pointRate,
+            };
+          }
+          return item;
+        });
+  
+        setViewTableData(updatedData);
       } else {
-        console.error("Failed to send data");
-        toast.error("Failed to create Customer");
+        console.error("Failed to update data");
+        toast.error("Failed to update user");
       }
     } catch (error) {
       console.error("Network error", error);
       toast.error("Network error");
     }
   };
-
+  
+  
   // ============== user deleted api call here  ====================================
 
   const handleDelete = async (id) => {
@@ -151,7 +210,7 @@ const CustomerList = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `https://agent-server-steel.vercel.app/deleteClientData/${id}`,
+            `http://localhost:5000/deleteClientData/${id}`,
             {
               method: "DELETE",
               headers: {
@@ -161,8 +220,8 @@ const CustomerList = () => {
           );
   
           if (response.ok) {
-            console.log("ViewTableData", viewTableData)
-            const updatedData = viewTableData.filter(item => item._id !== id);
+            console.log("ViewTableData", ViewTableData)
+            const updatedData = ViewTableData.filter(item => item._id !== id);
   
             // Set the state with the updated data
             setViewTableData(updatedData);
@@ -189,6 +248,8 @@ const CustomerList = () => {
       }
     });
   };
+  
+
   
 
   return (
@@ -246,7 +307,7 @@ const CustomerList = () => {
 
             {/* table body add here  */}
             <tbody>
-              {viewTableData?.map((item, index) => (
+              {ViewTableData?.map((item, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -408,7 +469,7 @@ const CustomerList = () => {
               {/* button type will be submit for handling form submission*/}
               <button
                 type="button"
-                onClick={handleSubmit}
+                onClick={registerUserInsertData}
                 className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Submit
@@ -587,7 +648,7 @@ const CustomerList = () => {
           Previous
         </div>
         <div className="flex justify-center items-center  ">
-          {[...Array(pages).keys()].map((item, ind) => (
+          {[...Array(page).keys()].map((item, ind) => (
             <div
               onClick={() => {
                 setPageNumber(item);
