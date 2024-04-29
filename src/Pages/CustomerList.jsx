@@ -33,7 +33,7 @@ const CustomerList = () => {
   /// ===================================== search functionality added =====================================
 
   useEffect(() => {
-    const url = new URL("https://agent-server-eosin.vercel.app/getClientData");
+    const url = new URL("https://agent-server-steel.vercel.app/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
@@ -62,7 +62,7 @@ const CustomerList = () => {
       pointRate: pointRate,
     };
     try {
-      const response = await fetch("https://agent-server-eosin.vercel.app/clientListItem", {
+      const response = await fetch("https://agent-server-steel.vercel.app/clientListItem", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -115,7 +115,7 @@ const CustomerList = () => {
     console.log("check value", data, eidteId);
 
     try {
-      const response = await fetch(`https://agent-server-eosin.vercel.app/eiditeClientData/${eidteId}`, {
+      const response = await fetch(`https://agent-server-steel.vercel.app/eiditeClientData/${eidteId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -151,7 +151,7 @@ const CustomerList = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `https://agent-server-eosin.vercel.app/deleteClientData/${id}`,
+            `https://agent-server-steel.vercel.app/deleteClientData/${id}`,
             {
               method: "DELETE",
               headers: {
