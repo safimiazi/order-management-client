@@ -37,7 +37,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getingAllregisterUser = async () => {
-      const userData = await fetch("http://localhost:5000/getingRegisterUser");
+      const userData = await fetch("https://life-drop-server.vercel.app/getingRegisterUser");
       const userDataString = await userData.json();
       console.log(userDataString);
       setUserDataList(userDataString?.finalResulst);
@@ -90,7 +90,7 @@ const Dashboard = () => {
     const insertDataToDataBase = async () => {
       try {
         const response = await fetch(
-          "http://localhost:5000/insertTransaction",
+          "https://life-drop-server.vercel.app/insertTransaction",
           {
             method: "POST",
             headers: {
@@ -178,7 +178,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `http://localhost:5000/getingTotalData?search=${search2}`,
+          `https://life-drop-server.vercel.app/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
@@ -214,7 +214,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `http://localhost:5000/getingTotalData?search=${search2}`,
+          `https://life-drop-server.vercel.app/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
@@ -251,7 +251,7 @@ const Dashboard = () => {
   
   return (
     <div className="container mx-auto  py-8">
-      <div className="bg-gray-300 rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
+      <div className="dark:bg-gray-700 bg-white shadow-md rounded-md overflow-auto size-full p-4 mb-8 flex items-center gap-8 justify-between">
         <div className="flex-1 flex">
           <input
             id="userIdInput"
@@ -263,7 +263,7 @@ const Dashboard = () => {
           />
           <button
             id="searchButton"
-            className="bg-color hover:bg-orange-600 text-white py-2 px-4 rounded-r-md  focus:outline-none"
+            className="bg-color hover:bg-orange-600  dark:text-gray-400 py-2 px-4 rounded-r-md  focus:outline-none"
           >
             Search
           </button>
@@ -271,7 +271,7 @@ const Dashboard = () => {
         <div className="flex gap-2">
           <button
             onClick={() => handleConditionData("today")}
-            className="rounded-lg bg-color px-4   hover:bg-orange-600  py-2  text-white duration-300 active:scale-95"
+            className="rounded-lg bg-color px-4   hover:bg-orange-600  py-2   dark:text-gray-400 duration-300 active:scale-95"
           >
             Today
           </button>
@@ -304,18 +304,18 @@ const Dashboard = () => {
         </div>
       </div>
 
-      <div className="bg-white rounded-lg shadow-md md:p-4">
+      <div className="dark:bg-gray-700 bg-white rounded-lg shadow-md md:p-4">
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="bg-gray-50 rounded-lg">
+          <div className="dark:bg-gray-700 bg-white rounded-lg">
             <div className="overflow-x-auto ">
               <table className="w-full  text-left border mx-auto  my-2 ">
                 <thead>
-                  <tr className="bg-color text-white">
-                    <th className="py-3 px-2 text-left border-b">
+                  <tr className="bg-color">
+                    <th className="py-3 dark:text-white px-2 text-left border-b">
                       Total Agent Top Up
                     </th>
 
-                    <th className="py-3 px-2  border-b text-left">
+                    <th className="py-3 px-2 dark:text-white border-b text-left">
                       Payment Method
                     </th>
                   </tr>
@@ -323,10 +323,10 @@ const Dashboard = () => {
                 <tbody>
                   <tr className=" text-left transition duration-300">
                     <td className="py-1 px-2 border-b">
-                      BDT: ৳ <span> {allTransationData?.TotalDopositeAmount}</span>{" "}
+                      BDT: ৳ <span> {allTransationData?.TotalDopositeAmount.toFixed(2)}</span>{" "}
                     </td>
 
-                    <td className="py-1 px-2 border-b text-left">
+                    <td className="py-1 dark:text-white px-2 border-b text-left">
                       bKash: ৳{" "}
                       <span>
                         {allTransationData?.totalDopositePaymentMethod.bkash}
@@ -334,7 +334,7 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">
+                    <td className="py-1 dark:text-white px-2 border-b">
                       Credits: ৳{" "}
                       <span>
                         {" "}
@@ -342,7 +342,7 @@ const Dashboard = () => {
                       </span>
                     </td>
 
-                    <td className="py-1 px-2 border-b text-left">
+                    <td className="py-1 dark:text-white px-2 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
                         {allTransationData?.totalDopositePaymentMethod?.rocket}
@@ -350,17 +350,17 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Unique Agents: <span>{allTransationData?.dopositeUniqueCustomers}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Unique Agents: <span>{allTransationData?.dopositeUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-2 border-b text-left">Upay: ৳ <span>  {allTransationData?.totalDopositePaymentMethod?.upay}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b text-left">Upay: ৳ <span>  {allTransationData?.totalDopositePaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Total Count: <span>{allTransationData?.dopsiteTransactions}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Total Count: <span>{allTransationData?.dopsiteTransactions}</span></td>
 
-                    <td className="py-1 px-2 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalDopositePaymentMethod?.nagod}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b text-left">Nagod: ৳ <span>{allTransationData?.totalDopositePaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Last Deposit: <span>{allTransationData?.dopsiteTransactionTime}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Last Deposit: <span>{allTransationData?.dopsiteTransactionTime}</span></td>
 
                     <td className="py-1 px-2 border-b text-left"></td>
                   </tr>
@@ -368,23 +368,23 @@ const Dashboard = () => {
               </table>
               <table className="w-full  text-left border mx-auto  my-6">
                 <thead>
-                  <tr className="bg-color text-white">
-                    <th className="py-3 px-2 text-left border-b">
+                  <tr className="bg-color ">
+                    <th className="py-3 px-2 dark:text-white text-left border-b">
                       Total Withdrawal
                     </th>
 
-                    <th className="py-3 px-2  border-b text-left">
+                    <th className="py-3 px-2 dark:text-white  border-b text-left">
                       Payment Method
                     </th>
                   </tr>
                 </thead>
                 <tbody>
                   <tr className=" text-left transition duration-300">
-                    <td className="py-1 px-2 border-b">
-                      BDT: ৳ <span> {allTransationData?.totalWithdrawAmount}</span>{" "}
+                    <td className="py-1 px-2 dark:text-white border-b">
+                      BDT: ৳ <span> {allTransationData?.totalWithdrawAmount.toFixed(2)}</span>{" "}
                     </td>
 
-                    <td className="py-1 px-2 border-b text-left">
+                    <td className="py-1 px-2 dark:text-white border-b text-left">
                       bKash: ৳{" "}
                       <span>
                         {allTransationData?.totalWithDrawPaymentMethod?.bkash}
@@ -392,15 +392,15 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">
+                    <td className="py-1 dark:text-white px-2 border-b">
                       Credits: ৳{" "}
                       <span>
                         {" "}
-                        {allTransationData?.totalWithdrawCredit}
+                        {allTransationData?.totalWithdrawCredit.toFixed(2)}
                       </span>
                     </td>
 
-                    <td className="py-1 px-2 border-b text-left">
+                    <td className="py-1 dark:text-white px-2 border-b text-left">
                       Rocket: ৳{" "}
                       <span>
                       {allTransationData?.totalWithDrawPaymentMethod?.rocket}
@@ -409,17 +409,17 @@ const Dashboard = () => {
                     </td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Unique Agents: <span>{allTransationData?.withdrawUniqueCustomers}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Unique Agents: <span>{allTransationData?.withdrawUniqueCustomers}</span></td>
 
-                    <td className="py-1 px-2 border-b text-left">Upay: ৳ <span> {allTransationData?.totalWithDrawPaymentMethod?.upay}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b text-left">Upay: ৳ <span> {allTransationData?.totalWithDrawPaymentMethod?.upay}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Total Count: <span>{allTransationData?.withdrawTransactions}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Total Count: <span>{allTransationData?.withdrawTransactions}</span></td>
 
-                    <td className="py-1 px-2 border-b text-left">Nagod: ৳ <span>{allTransationData?.totalWithDrawPaymentMethod?.nagod}</span></td>
+                    <td className="py-1 px-2 border-b dark:text-white text-left">Nagod: ৳ <span>{allTransationData?.totalWithDrawPaymentMethod?.nagod}</span></td>
                   </tr>
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Last Withdraw: <span>{allTransationData?.withdrawTransactionTime}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Last Withdraw: <span>{allTransationData?.withdrawTransactionTime}</span></td>
 
                     <td className="py-1 px-2 border-b text-left"></td>
                   </tr>
@@ -430,12 +430,12 @@ const Dashboard = () => {
 
               <table className="w-full  text-left border mx-auto  my-6">
                 <thead>
-                  <tr className="bg-color text-white">
-                    <th className="py-3 px-2 text-left border-b">
+                  <tr className="bg-color">
+                    <th className="py-3 dark:text-white px-2 text-left border-b">
                       Need Banlance
                     </th>
 
-                    <th className="py-3 px-2  border-b text-left">
+                    <th className="py-3  dark:text-white px-2  border-b text-left">
                       Need Points
                     </th>
                   </tr>
@@ -443,9 +443,9 @@ const Dashboard = () => {
                 <tbody>
                
                   <tr className=" transition duration-300">
-                    <td className="py-1 px-2 border-b">Balance: <span>{allTransationData?.remainAmounts}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b">Balance: <span>{allTransationData?.remainAmounts}</span></td>
 
-                    <td className="py-1 px-2 border-b text-left">Points: ৳ <span>{allTransationData?.remainPoints?.toFixed(2)}</span></td>
+                    <td className="py-1 px-2 dark:text-white border-b text-left">Points: ৳ <span>{allTransationData?.remainPoints?.toFixed(2)}</span></td>
                   </tr>
                
                 
@@ -456,9 +456,9 @@ const Dashboard = () => {
 
           <div>
             {!showOrderDetails && (
-              <div className="bg-white rounded-lg  p-2">
-                <form className="max-w-md mx-auto bg-white rounded md:p-6">
-                  <h2 className="text-2xl font-semibold mb-4">
+              <div className="dark:bg-gray-700 bg-white rounded-lg  p-2">
+                <form className="max-w-md mx-auto dark:bg-gray-600 bg-white rounded md:p-6">
+                  <h2 className="text-2xl dark:text-white font-semibold mb-4">
                     Order Management
                   </h2>
                   <div className="mb-4">
@@ -573,7 +573,7 @@ const Dashboard = () => {
                   <button
                     type="button"
                     onClick={handleSubmit}
-                    className="bg-color hover:bg-orange-700 text-white font-bold py-2 px-4 rounded"
+                    className="bg-color hover:bg-orange-700 font-bold py-2 px-4 rounded"
                   >
                     Submit
                   </button>
@@ -581,7 +581,7 @@ const Dashboard = () => {
               </div>
             )}
             {showOrderDetails && (
-              <div className="bg-white rounded-lg p-2 mt-4">
+              <div className="dark:bg-gray-700 bg-white rounded-lg p-2 mt-4">
                 <h2 className="text-2xl font-semibold mb-4">Order Details</h2>
                 <div className="mb-4">
                   <label
@@ -658,13 +658,13 @@ const Dashboard = () => {
                 <div>
                   <button
                     onClick={handleSentData}
-                    className="bg-color hover:bg-orange-700 text-white font-semibold py-2 px-4 rounded-md focus:outline-none mr-4"
+                    className="bg-color hover:bg-orange-700  font-semibold py-2 px-4 rounded-md focus:outline-none mr-4"
                   >
                     Submit
                   </button>
                   <button
                     onClick={() => setShowOrderDetails(false)}
-                    className="bg-black text-white font-semibold py-2 px-4 rounded-md focus:outline-none mr-4"
+                    className="bg-black  font-semibold py-2 px-4 rounded-md focus:outline-none mr-4"
                   >
                     Back
                   </button>

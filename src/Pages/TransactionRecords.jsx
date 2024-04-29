@@ -20,7 +20,7 @@ const TransactionRecords = () => {
   console.log(search, pageNumber);
   // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
-    const url = new URL("http://localhost:5000/getTransationDAta");
+    const url = new URL("https://life-drop-server.vercel.app/getTransationDAta");
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 
@@ -40,7 +40,7 @@ const TransactionRecords = () => {
 
   return (
     <div className="flex flex-col gap-5">
-      <div className="flex items-center justify-between mt-5">
+      <div className="dark:bg-gray-700 p-2 rounded-md flex items-center justify-between mt-5">
         <div>
           <h3 className=" text-base max-sm:w-52  font-bold">
             Transaction Records
@@ -59,8 +59,8 @@ const TransactionRecords = () => {
         </div>
       </div>
       <div className="overflow-x-auto">
-        <table className="w-full border-collapse  bg-white shadow-md rounded-lg">
-          <thead className="bg-gray-100">
+        <table className="w-full border-collapse  dark:bg-gray-700 p-2 rounded-md">
+          <thead className="dark:bg-gray-700 p-2 rounded-md">
             <tr>
               <th className="px-4 py-2">#</th>
               <th className="px-4 py-2">Type</th>
@@ -76,7 +76,7 @@ const TransactionRecords = () => {
           <tbody>
             {/* view data transation information with table   */}
             {getingTranstionData?.map((item, index) => (
-              <tr className="bg-white border-b">
+              <tr className="dark:bg-gray-700 p-5 rounded-md border-b ">
                 <td className="px-4 py-2">{++index}</td>
                 <td className="px-4 py-2">{item?.paymentType}</td>
                 <td className="px-4 py-2">{item?.customerId}</td>

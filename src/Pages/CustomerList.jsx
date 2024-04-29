@@ -29,14 +29,12 @@ const CustomerList = () => {
     setPageNumber(num);
   };
 
-
-  console.log("edited Id", eidteId)
   /// ===================================== search functionality added the  =====================================
 
   // search value and pagiation value add within array
 
   useEffect(() => {
-    const url = new URL("http://localhost:5000/getClientData");
+    const url = new URL("https://life-drop-server.vercel.app/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
@@ -85,7 +83,7 @@ const handleNewCustomer = () => {
       // setAlldata(data);
       try {
         const response = await fetch(
-          "http://localhost:5000/clientListItem",
+          "https://life-drop-server.vercel.app/clientListItem",
           {
             method: "POST",
             headers: {
@@ -100,8 +98,12 @@ const handleNewCustomer = () => {
           console.log(responseData);
           setViewTableData(prevData => [...prevData, data].reverse());
           setDataListLenght(prevLength => prevLength + 1);
-          toast.success("Successfully added user!");
-
+           if (responseData.result.message === 'successfully insert data ') {
+            toast.success("Successfully added user!")
+           }
+          if(responseData.result.message === "User with the provided uniqueId already exists in the database"){
+            toast.error("user already register!")
+          }
         } else {
           throw new Error("Failed to register user. Server responded with: " + response.status);
         }
@@ -153,7 +155,7 @@ const handleNewCustomer = () => {
     };
   
     try {
-      const response = await fetch(`http://localhost:5000/eiditeClientData/${eidteId}`, {
+      const response = await fetch(`https://life-drop-server.vercel.app/eiditeClientData/${eidteId}`, {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",
@@ -210,7 +212,7 @@ const handleNewCustomer = () => {
       if (result.isConfirmed) {
         try {
           const response = await fetch(
-            `http://localhost:5000/deleteClientData/${id}`,
+            `https://life-drop-server.vercel.app/deleteClientData/${id}`,
             {
               method: "DELETE",
               headers: {
