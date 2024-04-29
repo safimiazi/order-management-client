@@ -13,16 +13,16 @@ const TransactionRecords = () => {
 
   const page = Math.ceil(transactionInfoLength / 50) || 0;
 
-  const updatePageNumber = (num) => {
-    if (num > page - 1 || num < 0) {
-      return setPageNumber(0);
-    }
-    setPageNumber(num);
-  };
+  // const updatePageNumber = (num) => {
+  //   if (num > page - 1 || num < 0) {
+  //     return setPageNumber(0);
+  //   }
+  //   setPageNumber(num);
+  // };
 
   useEffect(() => {
     const url = new URL("https://agent-server-eosin.vercel.app/getTransationDAta");
-    const params = { search: search, pageNumber: pageNumber };
+    const params = { search: search};
     url.search = new URLSearchParams(params).toString();
 
     const getTransactionInfo = async () => {
@@ -40,7 +40,7 @@ const TransactionRecords = () => {
       }
     };
     getTransactionInfo();
-  }, [search, pageNumber]);
+  }, [search]);
 
   // Store state in browser storage whenever it changes
   useEffect(() => {
@@ -111,7 +111,7 @@ const TransactionRecords = () => {
       </div>
       <div className="flex select-none justify-center items-center bg-white shadow-lg rounded-sm w-fit mx-auto">
         {/* left arrow */}
-        <div
+        {/* <div
           onClick={() => {
             updatePageNumber(pageNumber - 1);
           }}
@@ -141,8 +141,8 @@ const TransactionRecords = () => {
             </g>
           </svg>
           Previous
-        </div>
-        <div className="flex justify-center items-center  ">
+        </div> */}
+        {/* <div className="flex justify-center items-center  ">
           {[...Array(page).keys()].map((item, ind) => (
             <div
               onClick={() => {
@@ -158,9 +158,9 @@ const TransactionRecords = () => {
               {item + 1}
             </div>
           ))}
-        </div>
+        </div> */}
         {/* right arrow */}
-        <div
+        {/* <div
           onClick={() => {
             updatePageNumber(pageNumber + 1);
           }}
@@ -190,7 +190,7 @@ const TransactionRecords = () => {
               ></path>{" "}
             </g>
           </svg>
-        </div>
+        </div> */}
       </div>
     </div>
   );
