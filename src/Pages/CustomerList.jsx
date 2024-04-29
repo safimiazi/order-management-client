@@ -101,7 +101,7 @@ const handleNewCustomer = () => {
         if (response.ok) {
           const responseData = await response.json();
           console.log(responseData);
-          setViewTableData(prevData => [...prevData, allData]);
+          setViewTableData(prevData => [...prevData, allData].reverse());
           setDataListLenght(prevLength => prevLength + 1);
         } else {
           throw new Error("Failed to register user. Server responded with: " + response.status);
@@ -168,7 +168,7 @@ const handleNewCustomer = () => {
         toast.success("Successfully updated user!");
   
         // Update the table data after successful edit
-        const updatedData = ViewTableData.map(item => {
+        const updatedData = ViewTableData.reverse().map(item => {
           if (item._id === eidteId) {
             // Update the fields of the edited item
             console.log("all item", item)
