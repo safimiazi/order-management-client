@@ -8,47 +8,42 @@ const CustomerList = () => {
   const [openEdit, setOpenEdit] = useState(false);
   const [eidteId, setSingleIdModel] = useState();
   const [pageNumber, setPageNumber] = useState(0);
-  const [customer, setCustomer] = useState();
+  const [customer, setCustomer] = useState("");
   const [uniqueId, setUniqueId] = useState("");
-  const [type, setType] = useState();
-  const [condition, setCondition] = useState();
-  const [pointRate, setPointRate] = useState();
-  const [search, setSearch] = useState();
-  const [allData, setAlldata] = useState({}); // all the data addd here
-  const [ViewTableData, setViewTableData] = useState([]); // viwe the data to table list get form server
-  const [dataListLenght, setDataListLenght] = useState(0); // total data lenght here
+  const [type, setType] = useState("");
+  const [condition, setCondition] = useState("");
+  const [pointRate, setPointRate] = useState("");
+  const [search, setSearch] = useState("");
+  const [allData, setAllData] = useState({}); // all the data added here
+  const [viewTableData, setViewTableData] = useState([]); // view the data to table list get from server
+  const [dataListLength, setDataListLength] = useState(0); // total data length here
 
   console.log(customer, uniqueId, type, condition, pointRate);
-  const pages = Math.ceil(dataListLenght / 50);
-  const page = pages; // Adjust the page numbers the way you want
+  const pages = Math.ceil(dataListLength / 50);
   console.log(pages);
+
   const updatePageNumber = (num) => {
-    if (num > page - 1 || 0 > num) {
-      return setPageNumber(0);
+    if (num > pages - 1 || num < 0) {
+      setPageNumber(0);
+    } else {
+      setPageNumber(num);
     }
-    setPageNumber(num);
   };
 
-
-  console.log("edited Id", eidteId)
-  /// ===================================== search functionality added the  =====================================
-
-  // search value and pagiation value add within array
+  /// ===================================== search functionality added =====================================
 
   useEffect(() => {
     const url = new URL("https://agent-server-eosin.vercel.app/getClientData");
     url.searchParams.append("pages", pageNumber);
     url.searchParams.append("searchValue", search);
 
-    // geting data search and pagination
+    // getting data search and pagination
     const fetchData = async () => {
       try {
         const response = await fetch(url);
         const data = await response.json();
-        // Use the data here
-        console.log(data);
-        setViewTableData(data?.clientDataList?.finalliyValue.reverse());
-        setDataListLenght(data?.clientDataList?.TotalDataLenght);
+        setViewTableData(data?.clientDataList?.finalliyValue);
+        setDataListLength(data?.clientDataList?.TotalDataLenght);
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -57,93 +52,58 @@ const CustomerList = () => {
     fetchData();
   }, [search, pageNumber]);
 
-
-  // data insert section ================================  insert data to database =======================================
-
-
-
-//new customer open modal
-const handleNewCustomer = () => {
-  setCustomer("");
-  setUniqueId("");
-  setType(""); // Set the default value for the selector
-  setCondition(""); // Set the default value for the selector
-  setPointRate("");
-  setOpenModal(true)
-}
-
-
-
-    const registerUserInsertData = async () => {
-      const data = {
-        uniqueId: uniqueId,
-        customerName: customer,
-        type: type,
-        condition: condition,
-        pointRate: pointRate,
-      };
-      // setAlldata(data);
-      try {
-        const response = await fetch(
-          "https://agent-server-eosin.vercel.app/clientListItem",
-          {
-            method: "POST",
-            headers: {
-              "Content-Type": "application/json",
-            },
-            body: JSON.stringify(data),
-          }
-        );
-  
-        if (response.ok) {
-          const responseData = await response.json();
-          console.log(responseData);
-          setViewTableData(prevData => [...prevData, data].reverse());
-          setDataListLenght(prevLength => prevLength + 1);
-          toast.success("Successfully added user!");
-
-        } else {
-          throw new Error("Failed to register user. Server responded with: " + response.status);
-        }
-      } catch (error) {
-        console.error("Error while registering user:", error);
-      }
+  // Insert data to database
+  const handleSubmit = async () => {
+    const data = {
+      uniqueId: uniqueId,
+      customerName: customer,
+      type: type,
+      condition: condition,
+      pointRate: pointRate,
     };
-  
+    try {
+      const response = await fetch("https://agent-server-eosin.vercel.app/clientListItem", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(data),
+      });
+      const result = await response.json();
+      if (result?.result?.message === "successfully insert data ") {
+        toast.success("successfully added client");
+        setAllData(data); // Set the data for dependency
+        setViewTableData((prevData) => [...prevData, data]);
+        setDataListLength((prevLength) => prevLength + 1);
+      }
+    } catch (error) {
+      console.error("Error while registering user:", error);
+    }
+  };
 
-  
-
-  // write fuction for genarete unique id  for identifying users
-  // useEffect(() => {
-  //   const generateUniqueId = () => {
-  //     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  //     let uniqueId = '';
-  //     for (let i = 0; i < 8; i++) {
-  //       const randomIndex = Math.floor(Math.random() * characters.length);
-  //       uniqueId += characters[randomIndex];
-  //     }
-  //     setUniqueId(uniqueId)
-  //   };
-
-  //   generateUniqueId();
-  // }, [])
+  // Open modal for new customer
+  const handleNewCustomer = () => {
+    setCustomer("");
+    setUniqueId("");
+    setType("");
+    setCondition("");
+    setPointRate("");
+    setOpenModal(true);
+  };
 
   const handleEdit = (id) => {
     setSingleIdModel(id);
     setOpenEdit(true);
 
-    const singleUserEdit = ViewTableData?.find((item) => item._id === id);
+    const singleUserEdit = viewTableData?.find((item) => item._id === id);
     setCustomer(singleUserEdit?.customerName);
     setUniqueId(singleUserEdit?.uniqueId);
-    setType(singleUserEdit?.type); // Set the default value for the selector
-    setCondition(singleUserEdit?.condition); // Set the default value for the selector
+    setType(singleUserEdit?.type);
+    setCondition(singleUserEdit?.condition);
     setPointRate(singleUserEdit?.pointRate);
   };
 
-  // ============= user edite data find =========================
-
-  // ============== user edite here =====================================
-  const HandleEditedData = async (eidteId) => {
+  const handleEditedData = async (id) => {
     const data = {
       customerName: customer,
       uniqueId: uniqueId,
@@ -151,7 +111,9 @@ const handleNewCustomer = () => {
       condition: condition,
       pointRate: pointRate,
     };
-  
+
+    console.log("check value", data, eidteId);
+
     try {
       const response = await fetch(`https://agent-server-eosin.vercel.app/eiditeClientData/${eidteId}`, {
         method: "PUT",
@@ -160,41 +122,20 @@ const handleNewCustomer = () => {
         },
         body: JSON.stringify(data),
       });
-  
       if (response.ok) {
-        console.log("Data is successfully edited");
-        toast.success("Successfully updated user!");
-  
-        // Update the table data after successful edit
-        const updatedData = ViewTableData.map(item => {
-          if (item._id === eidteId) {
-            // Update the fields of the edited item
-            console.log("all item", item)
-
-            return {
-              ...item,
-              customerName: customer,
-              uniqueId: uniqueId,
-              type: type,
-              condition: condition,
-              pointRate: pointRate,
-            };
-          }
-          return item;
-        });
-  
-        setViewTableData(updatedData);
+        console.log("data is successfully sent");
+        toast.success("Successfully New User Created!");
+        setViewTableData((prevData) => [...prevData, data]);
       } else {
-        console.error("Failed to update data");
-        toast.error("Failed to update user");
+        console.error("Failed to send data");
+        toast.error("Failed to create Customer");
       }
     } catch (error) {
       console.error("Network error", error);
       toast.error("Network error");
     }
   };
-  
-  
+
   // ============== user deleted api call here  ====================================
 
   const handleDelete = async (id) => {
@@ -220,8 +161,8 @@ const handleNewCustomer = () => {
           );
   
           if (response.ok) {
-            console.log("ViewTableData", ViewTableData)
-            const updatedData = ViewTableData.filter(item => item._id !== id);
+            console.log("ViewTableData", viewTableData)
+            const updatedData = viewTableData.filter(item => item._id !== id);
   
             // Set the state with the updated data
             setViewTableData(updatedData);
@@ -248,8 +189,6 @@ const handleNewCustomer = () => {
       }
     });
   };
-  
-
   
 
   return (
@@ -307,7 +246,7 @@ const handleNewCustomer = () => {
 
             {/* table body add here  */}
             <tbody>
-              {ViewTableData?.map((item, index) => (
+              {viewTableData?.map((item, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
@@ -469,7 +408,7 @@ const handleNewCustomer = () => {
               {/* button type will be submit for handling form submission*/}
               <button
                 type="button"
-                onClick={registerUserInsertData}
+                onClick={handleSubmit}
                 className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Submit
@@ -648,7 +587,7 @@ const handleNewCustomer = () => {
           Previous
         </div>
         <div className="flex justify-center items-center  ">
-          {[...Array(page).keys()].map((item, ind) => (
+          {[...Array(pages).keys()].map((item, ind) => (
             <div
               onClick={() => {
                 setPageNumber(item);
