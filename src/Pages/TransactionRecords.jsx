@@ -20,7 +20,7 @@ const TransactionRecords = () => {
   console.log(search, pageNumber);
   // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
-    const url = new URL("https://agent-server-navy.vercel.app/getTransationDAta");
+    const url = new URL("https://agent-server-eosin.vercel.app/getTransationDAta");
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 

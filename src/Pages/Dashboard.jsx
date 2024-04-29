@@ -37,7 +37,7 @@ const Dashboard = () => {
 
   useEffect(() => {
     const getingAllregisterUser = async () => {
-      const userData = await fetch("https://agent-server-navy.vercel.app/getingRegisterUser");
+      const userData = await fetch("https://agent-server-eosin.vercel.app/getingRegisterUser");
       const userDataString = await userData.json();
       console.log(userDataString);
       setUserDataList(userDataString?.finalResulst);
@@ -90,7 +90,7 @@ const Dashboard = () => {
     const insertDataToDataBase = async () => {
       try {
         const response = await fetch(
-          "https://agent-server-navy.vercel.app/insertTransaction",
+          "https://agent-server-eosin.vercel.app/insertTransaction",
           {
             method: "POST",
             headers: {
@@ -178,7 +178,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `https://agent-server-navy.vercel.app/getingTotalData?search=${search2}`,
+          `https://agent-server-eosin.vercel.app/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
@@ -214,7 +214,7 @@ const Dashboard = () => {
       try {
         // Fetch data from the API using the search parameter
         const response = await fetch(
-          `https://agent-server-navy.vercel.app/getingTotalData?search=${search2}`,
+          `https://agent-server-eosin.vercel.app/getingTotalData?search=${search2}`,
           {
             method: "GET",
             headers: {
