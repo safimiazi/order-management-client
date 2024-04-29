@@ -1,42 +1,53 @@
 import React, { useEffect, useState } from "react";
 
 const TransactionRecords = () => {
-  const [pageNumber, setPageNumber] = useState(0); // page number
-  const [getingTranstionData, setTransationData] = useState([]); // geting all transation data form the server list
-  const [transactionInfoLength, setTransactionInfoLength] = useState(0); // geting all the transationinfo lenght
-  const [search, setSearch] = useState("");
+  // Initialize state with stored values or default values
+  const [pageNumber, setPageNumber] = useState(
+    parseInt(localStorage.getItem("pageNumber")) || 0
+  );
+  const [getingTranstionData, setTransationData] = useState(
+    JSON.parse(localStorage.getItem("getingTranstionData")) || []
+  );
+  const [transactionInfoLength, setTransactionInfoLength] = useState(0);
+  const [search, setSearch] = useState(localStorage.getItem("search") || "");
 
-  // =========== paginstaion functionlities ===================
+  const page = Math.ceil(transactionInfoLength / 50) || 0;
 
-  const page = Math.ceil(transactionInfoLength / 50) || 0; // Adjust the page numbers the way you want
-  console.log(page, getingTranstionData);
   const updatePageNumber = (num) => {
-    if (num > page - 1 || 0 > num) {
+    if (num > page - 1 || num < 0) {
       return setPageNumber(0);
     }
     setPageNumber(num);
   };
 
-  console.log(search, pageNumber);
-  // =========== call api for see trasaction info and pgiation , search functionality =============
   useEffect(() => {
     const url = new URL("https://agent-server-eosin.vercel.app/getTransationDAta");
     const params = { search: search, pageNumber: pageNumber };
     url.search = new URLSearchParams(params).toString();
 
     const getTransactionInfo = async () => {
-      const transactionData = await fetch(url);
-      const getingTransation = await transactionData.json();
-      console.log(getingTransation);
-      setTransactionInfoLength(
-        getingTransation?.getingTransationResult?.TotalDataLenght
-      );
-      setTransationData(
-        getingTransation?.getingTransationResult?.finalliyValue.reverse()
-      );
+      try {
+        const transactionData = await fetch(url);
+        const getingTransation = await transactionData.json();
+        setTransactionInfoLength(
+          getingTransation?.getingTransationResult?.TotalDataLenght
+        );
+        setTransationData(
+          getingTransation?.getingTransationResult?.finalliyValue.reverse()
+        );
+      } catch (error) {
+        console.error("Error fetching transaction data:", error);
+      }
     };
     getTransactionInfo();
   }, [search, pageNumber]);
+
+  // Store state in browser storage whenever it changes
+  useEffect(() => {
+    localStorage.setItem("pageNumber", pageNumber);
+    localStorage.setItem("search", search);
+    localStorage.setItem("getingTranstionData", JSON.stringify(getingTranstionData));
+  }, [pageNumber, search, getingTranstionData]);
 
   return (
     <div className="flex flex-col gap-5">
