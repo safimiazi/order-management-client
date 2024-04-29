@@ -60,17 +60,6 @@ const CustomerList = () => {
 
   // data insert section ================================  insert data to database =======================================
 
-  const handleSubmit = () => {
-    const data = {
-      uniqueId: uniqueId,
-      customerName: customer,
-      type: type,
-      condition: condition,
-      pointRate: pointRate,
-    };
-    setAlldata(data);
-    console.log("mohibulla", data)
-  };
 
 
 //new customer open modal
@@ -84,8 +73,16 @@ const handleNewCustomer = () => {
 }
 
 
-  useEffect(() => {
+
     const registerUserInsertData = async () => {
+      const data = {
+        uniqueId: uniqueId,
+        customerName: customer,
+        type: type,
+        condition: condition,
+        pointRate: pointRate,
+      };
+      // setAlldata(data);
       try {
         const response = await fetch(
           "https://agent-server-eosin.vercel.app/clientListItem",
@@ -94,15 +91,17 @@ const handleNewCustomer = () => {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify(allData),
+            body: JSON.stringify(data),
           }
         );
   
         if (response.ok) {
           const responseData = await response.json();
           console.log(responseData);
-          setViewTableData(prevData => [...prevData, allData].reverse());
+          setViewTableData(prevData => [...prevData, data].reverse());
           setDataListLenght(prevLength => prevLength + 1);
+          toast.success("Successfully added user!");
+
         } else {
           throw new Error("Failed to register user. Server responded with: " + response.status);
         }
@@ -111,8 +110,7 @@ const handleNewCustomer = () => {
       }
     };
   
-    registerUserInsertData();
-  }, [allData]);
+
   
 
   // write fuction for genarete unique id  for identifying users
@@ -168,7 +166,7 @@ const handleNewCustomer = () => {
         toast.success("Successfully updated user!");
   
         // Update the table data after successful edit
-        const updatedData = ViewTableData.reverse().map(item => {
+        const updatedData = ViewTableData.map(item => {
           if (item._id === eidteId) {
             // Update the fields of the edited item
             console.log("all item", item)
@@ -471,7 +469,7 @@ const handleNewCustomer = () => {
               {/* button type will be submit for handling form submission*/}
               <button
                 type="button"
-                onClick={handleSubmit}
+                onClick={registerUserInsertData}
                 className="relative py-2.5 px-5 rounded-lg mt-6 bg-color drop-shadow-lg hover:bg-orange-700 text-white  dark:bg-gray-700 dark:hover:bg-gray-800"
               >
                 Submit
