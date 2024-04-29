@@ -309,7 +309,7 @@ const handleNewCustomer = () => {
 
             {/* table body add here  */}
             <tbody>
-              {ViewTableData.reverse()?.map((item, index) => (
+              {ViewTableData?.map((item, index) => (
                 <tr
                   key={index}
                   className="bg-white border-b dark:bg-gray-800 dark:border-gray-700 hover:bg-gray-50 dark:hover:bg-gray-600"
