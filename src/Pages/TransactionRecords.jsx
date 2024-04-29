@@ -20,27 +20,27 @@ const TransactionRecords = () => {
   //   setPageNumber(num);
   // };
 
-  useEffect(() => {
-    const url = new URL("https://agent-server-eosin.vercel.app/getTransationDAta");
-    const params = { search: search};
-    url.search = new URLSearchParams(params).toString();
+  // useEffect(() => {
+  //   const url = new URL("https://agent-server-eosin.vercel.app/getTransationDAta");
+  //   const params = { search: search};
+  //   url.search = new URLSearchParams(params).toString();
 
-    const getTransactionInfo = async () => {
-      try {
-        const transactionData = await fetch(url);
-        const getingTransation = await transactionData.json();
-        setTransactionInfoLength(
-          getingTransation?.getingTransationResult?.TotalDataLenght
-        );
-        setTransationData(
-          getingTransation?.getingTransationResult?.finalliyValue.reverse()
-        );
-      } catch (error) {
-        console.error("Error fetching transaction data:", error);
-      }
-    };
-    getTransactionInfo();
-  }, [search]);
+  //   const getTransactionInfo = async () => {
+  //     try {
+  //       const transactionData = await fetch(url);
+  //       const getingTransation = await transactionData.json();
+  //       setTransactionInfoLength(
+  //         getingTransation?.getingTransationResult?.TotalDataLenght
+  //       );
+  //       setTransationData(
+  //         getingTransation?.getingTransationResult?.finalliyValue.reverse()
+  //       );
+  //     } catch (error) {
+  //       console.error("Error fetching transaction data:", error);
+  //     }
+  //   };
+  //   getTransactionInfo();
+  // }, [search]);
 
   // Store state in browser storage whenever it changes
   useEffect(() => {
